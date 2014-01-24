@@ -30,7 +30,7 @@ func sum(x []float64) float64 {
 	return out
 }
 
-var arrOne []float64 = []float64{1, 2, 3}
+var arrOne []float64 = []float64{1, 2, 3, 4}
 
 func compareFloat(x float64, y float64) bool {
 	if math.Abs(x - y) > 1E-15 {
@@ -41,10 +41,12 @@ func compareFloat(x float64, y float64) bool {
 }
 
 func TestFold(t *testing.T) {
-	if Fold(add, arrOne) != 6 {
+	if Fold(add, arrOne) != 10 {
 		t.Error("Fold failed on 'add'")
-	} else if Fold(mult, arrOne) != 6 {
+		t.Error("Expected 10, got", Fold(add, arrOne))
+	} else if Fold(mult, arrOne) != 24 {
 		t.Error("Fold failed on 'mult'")
+		t.Error("Expected 24, got", Fold(mult, arrOne))
 	} else {
 		return
 	}

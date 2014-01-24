@@ -64,7 +64,7 @@ func genTriple(length int, f BiMathop) triple {
 	out := make([]float64, length)
 
 	for i:=0; i<length; i++ {
-		a1[i] = rand.Float64() * 100
+		a1[i] = rand.Float64()
 		a2[i] = rand.Float64() * 500
 		out[i] = f(a1[i], a2[i])
 
@@ -76,12 +76,10 @@ func genTriple(length int, f BiMathop) triple {
 }
 
 func BenchmarkFold(b *testing.B) {
-	g := genTriple(1000, add)
+	g := genTriple(10000, add)
 	b.ResetTimer()
 	for i:=0; i<b.N; i++ {
 		Fold(add, g.a1)
-		Fold(add, g.a2)
-		Fold(add, g.out)
 	}
 }
 

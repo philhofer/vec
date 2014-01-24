@@ -1,6 +1,5 @@
 package vec
 
-import "math"
 import "sort"
 
 /*
@@ -18,17 +17,17 @@ type BiVariateData struct {
 	isSorted bool
 }
 
-func MakeBiVariateData(xs []float64, ys []float64) BiVariateData {
+func MakeBiVariateData(xs []float64, ys []float64) *BiVariateData {
 	out := BiVariateData{xs, ys, false}
 	out.Sort()
-	return out
+	return &out
 }
 
-func (b BiVariateData) Len() int{
+func (b *BiVariateData) Len() int{
 	return len(b.Xs)
 }
 
-func (b BiVariateData) Less(i, j int) bool {
+func (b *BiVariateData) Less(i, j int) bool {
 	if b.Xs[i] < b.Xs[j] {
 		return true
 	} else {
@@ -36,13 +35,13 @@ func (b BiVariateData) Less(i, j int) bool {
 	}
 }
 
-func (b BiVariateData) Swap(i, j int) {
+func (b *BiVariateData) Swap(i, j int) {
 	b.Xs[i], b.Xs[j] = b.Xs[j], b.Xs[i]
 	b.Ys[i], b.Ys[j] = b.Ys[j], b.Ys[i]
 	return
 }
 
-func (b BiVariateData) Sort() {
+func (b *BiVariateData) Sort() {
 	//edge case 1
 	if b.isSorted {
 		return
@@ -59,34 +58,23 @@ func (b BiVariateData) Sort() {
 	b.isSorted = true
 }
 
-func (b BiVariateData) findNearestX(x float64) int {
+func (b BiVariateData) findXBounds(x float64) (int, int) {
 	if !b.isSorted {b.Sort()}
-	
+	l := len(b.Xs)
+
 	//edge cases
-	if x > b.Xs[len(b.Xs)] { return len(b.Xs)-1 }
-	if x < b.Xs[0] { return 0 }
+	if x > b.Xs[l-1] { return l-2, l-1 }
+	if x < b.Xs[0] { return 0, 1 }
 
 	out := 0
 	for b.Xs[out] < x {
 		out++
 	}
-	
-	if math.Abs(b.Xs[out]-x) > math.Abs(b.Xs[out+1]) {
-		out++
-	}
 
-	return out
+	return out, out+1
 	
 }
 
-/* 
-func CubicSpline(data BiVariateData) Interpolation {}
-
-Returns a CubicSplineInterpolation interface on 'data'
-
-
-
-*/
 
 /*
 func DiscreetConvolve(dat []float64, conv []float64) []float64 {}
