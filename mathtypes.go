@@ -71,20 +71,14 @@ func Fold(f BiMathop, vec []float64) float64 {
 	if len(vec) <= 1 {
 		return vec[0]
 	} else {
-		nvec := vec[1:len(vec)]
-		return accum(vec[0], f, nvec)
+		val := vec[0]
+		nvec := vec[1:]
+		for _, x := range nvec {
+			val = f(val, x)
+		}
+		return val
 	}
 }
-
-func accum(val float64, f BiMathop, vec []float64) float64 {
-	if len(vec) == 1 {
-		return f(val, vec[0])
-	} else {
-		nvec := vec[1:len(vec)]
-		return accum(f(val, vec[0]), f, nvec)
-	}
-}
-
 
 
 //Romberg Integration
