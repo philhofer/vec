@@ -68,14 +68,23 @@ func MakeFtLinop(f Linop) FtLinop {
 
 //Canonical foldl - folds from vec[0] to vec[n]
 func Fold(f BiMathop, vec []float64) float64 {
-	if len(vec) == 2 {
-		return f(vec[0], vec[1])
-	} else if len(vec) == 1 {
+	if len(vec) <= 1 {
 		return vec[0]
 	} else {
-		return f(vec[0], Fold(f, vec[1:len(vec)]))
+		nvec := vec[1:len(vec)]
+		return accum(vec[0], f, nvec)
 	}
 }
+
+func accum(val float64, f BiMathop, vec []float64) float64 {
+	if len(vec) == 1 {
+		return f(val, vec[0])
+	} else {
+		nvec := vec[1:len(vec)]
+		return accum(f(val, vec[0]), f, nvec)
+	}
+}
+
 
 
 //Romberg Integration

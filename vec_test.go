@@ -75,6 +75,16 @@ func genTriple(length int, f BiMathop) triple {
 
 }
 
+func BenchmarkFold(b *testing.B) {
+	g := genTriple(1000, add)
+	b.ResetTimer()
+	for i:=0; i<b.N; i++ {
+		Fold(add, g.a1)
+		Fold(add, g.a2)
+		Fold(add, g.out)
+	}
+}
+
 //Test MPmap with Cos()
 func TestMPmapCos(t *testing.T) {
 	localarr := genPair(10000, math.Cos)
