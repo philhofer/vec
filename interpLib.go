@@ -1,5 +1,10 @@
 package vec 
 
+/*
+Return a slice of length N 
+with equally-spaced values from 'start' to 'stop'
+(non-inclusive)
+*/
 func Arange(start float64, stop float64, N int) []float64 {
 	enforceStrict(start)
 	enforceStrict(stop)
@@ -11,13 +16,31 @@ func Arange(start float64, stop float64, N int) []float64 {
 	return f
 }
 
-//Type + Container for Cubic Spline Interpolation
+/*
+CubicSplineInterpolation type def
+points to BiVariateData and contains
+an array of coefficients used for evaluating
+the interpolation, its derivatives, and its
+definite integral
+*/
 type CubicSplineInterpolation struct {
 	data *BiVariateData
 	coeffs []float64
 }
 
-//'Natural' Cubic Spline
+/*
+Default constructor for CubicSplineInterpolation
+Returns a fully-formed CubicSplineInterpolation from
+the data containe in 'd'
+
+*Note: this is a 'natural' cubic spline (meaning that
+points evaluated outside the data endpoints are extrapolated
+linearly)
+
+Feeds values to getCubicSplinCoeffs() that are equivalent to
+the right-hand side of the matrix equation (18) referenced in:
+http://mathworld.wolfram.com/CubicSpline.html
+*/
 func CubicSpline(d BiVariateData) CubicSplineInterpolation {
 	spline := CubicSplineInterpolation{data: &d}
 	N := len(d.Ys)
@@ -34,7 +57,10 @@ func CubicSpline(d BiVariateData) CubicSplineInterpolation {
 	return spline
 }
 
-//Find interpolated f(x)
+/*
+Returns the interpolated value of 'x'
+on the data pointed to by 's'
+*/
 func (s CubicSplineInterpolation) F(x float64) float64{
 	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
@@ -49,7 +75,11 @@ func (s CubicSplineInterpolation) F(x float64) float64{
 	return a + b*t + c*t*t + d*t*t*t
 }
 
-//Find interpolated df(x)/dx
+/*
+First derivative of interpolated data
+evaluated at 'x'
+
+*/
 func (s CubicSplineInterpolation) DF(x float64) float64 {
 	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
@@ -65,6 +95,9 @@ func (s CubicSplineInterpolation) DF(x float64) float64 {
 	return (b + 2*c*t + 3*d*t*t)/(fin-start)
 }
 
+/*
+Second derivative evaluated at 'x'
+*/
 func (s CubicSplineInterpolation) DDF(x float64) float64 {
 	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
@@ -79,6 +112,10 @@ func (s CubicSplineInterpolation) DDF(x float64) float64 {
 	return (2*c + 6*d*t)/((fin-start)*(fin-start))
 }
 
+/*
+Returns the definite integral of a cubic spline
+evaluated from 'a' to 'b'
+*/
 func (s CubicSplineInterpolation) Integral(a float64, b float64) float64 {
 	enforceStrict(a)
 	enforceStrict(b)
@@ -141,7 +178,16 @@ func makeConstVec(a float64, N int) []float64{
 	return out
 }
 
+/*
+Computes the coefficients for
+cubic spline interpolation from an array of
+values by means of solving a tridiagonal matrix
+using gaussian elimination and back-substitution
 
+See:
+http://mathworld.wolfram.com/CubicSpline.html
+Eqn (18)
+*/
 func getCubicSplinCoeffs(x []float64) {
 	l := len(x)
 
