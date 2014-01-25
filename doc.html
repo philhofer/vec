@@ -1,0 +1,670 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "vec"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+				
+				<dd><a href="#Arange">func Arange(start float64, stop float64, N int) []float64</a></dd>
+			
+				
+				<dd><a href="#Fold">func Fold(f BiMathop, vec []float64) float64</a></dd>
+			
+				
+				<dd><a href="#MPmap">func MPmap(fm Mathop, arr []float64)</a></dd>
+			
+				
+				<dd><a href="#NewSem">func NewSem(N int) semaphore</a></dd>
+			
+				
+				<dd><a href="#PPmap">func PPmap(fm Mathop, arr []float64)</a></dd>
+			
+				
+				<dd><a href="#PVecOperation">func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64</a></dd>
+			
+				
+				<dd><a href="#Smap">func Smap(fm Mathop, arr []float64, start int, end int)</a></dd>
+			
+			
+				
+				<dd><a href="#BiMathop">type BiMathop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#BiVariateData">type BiVariateData</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#MakeBiVariateData">func MakeBiVariateData(xs []float64, ys []float64) *BiVariateData</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#BiVariateData.Len">func (b *BiVariateData) Len() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#BiVariateData.Less">func (b *BiVariateData) Less(i, j int) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#BiVariateData.Sort">func (b *BiVariateData) Sort()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#BiVariateData.Swap">func (b *BiVariateData) Swap(i, j int)</a></dd>
+				
+			
+				
+				<dd><a href="#Condenser">type Condenser</a></dd>
+				
+				
+			
+				
+				<dd><a href="#CubicSplineInterpolation">type CubicSplineInterpolation</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#CubicSpline">func CubicSpline(d BiVariateData) CubicSplineInterpolation</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#CubicSplineInterpolation.DDF">func (s CubicSplineInterpolation) DDF(x float64) float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#CubicSplineInterpolation.DF">func (s CubicSplineInterpolation) DF(x float64) float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#CubicSplineInterpolation.F">func (s CubicSplineInterpolation) F(x float64) float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#CubicSplineInterpolation.Integral">func (s CubicSplineInterpolation) Integral(a float64, b float64) float64</a></dd>
+				
+			
+				
+				<dd><a href="#FtBiMathop">type FtBiMathop</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#MakeFtBiMathop">func MakeFtBiMathop(f BiMathop) FtBiMathop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#FtCondenser">type FtCondenser</a></dd>
+				
+				
+			
+				
+				<dd><a href="#FtLinop">type FtLinop</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#MakeFtLinop">func MakeFtLinop(f Linop) FtLinop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#FtMathop">type FtMathop</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#MakeFtMathop">func MakeFtMathop(f Mathop) FtMathop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Linop">type Linop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Mathop">type Mathop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#Vecop">type Vecop</a></dd>
+				
+				
+			
+				
+				<dd><a href="#VectorField">type VectorField</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#VectorField.Val">func (v VectorField) Val(pts []float64) []float64</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/target/amap.go">amap.go</a>
+			
+				<a href="/target/dataops.go">dataops.go</a>
+			
+				<a href="/target/interpLib.go">interpLib.go</a>
+			
+				<a href="/target/mathtypes.go">mathtypes.go</a>
+			
+				<a href="/target/ppmap.go">ppmap.go</a>
+			
+				<a href="/target/pvec.go">pvec.go</a>
+			
+				<a href="/target/semaphore.go">semaphore.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+		
+		
+			
+			
+			<h2 id="Arange">func <a href="/target/interpLib.go?s=114:171#L1">Arange</a></h2>
+			<pre>func Arange(start <a href="/pkg/builtin/#float64">float64</a>, stop <a href="/pkg/builtin/#float64">float64</a>, N <a href="/pkg/builtin/#int">int</a>) []<a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Return a slice of length N
+with equally-spaced values from &#39;start&#39; to &#39;stop&#39;
+(non-inclusive)
+</p>
+
+			
+		
+			
+			
+			<h2 id="Fold">func <a href="/target/mathtypes.go?s=1640:1684#L62">Fold</a></h2>
+			<pre>func Fold(f <a href="#BiMathop">BiMathop</a>, vec []<a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Canonical foldl - folds from vec[0] to vec[n]
+</p>
+
+			
+		
+			
+			
+			<h2 id="MPmap">func <a href="/target/amap.go?s=241:277#L1">MPmap</a></h2>
+			<pre>func MPmap(fm <a href="#Mathop">Mathop</a>, arr []<a href="/pkg/builtin/#float64">float64</a>)</pre>
+			<pre>Massively Parallel Function-Slice Mapping
+</pre>
+<p>
+Should be used for mapping &#39;expensive&#39; functions
+onto short(ish) arrays in-place. Creates as many goroutines
+as there are floats in the array, so this bogs down for
+long arrays.
+</p>
+
+			
+		
+			
+			
+			<h2 id="NewSem">func <a href="/target/semaphore.go?s=60:88#L1">NewSem</a></h2>
+			<pre>func NewSem(N <a href="/pkg/builtin/#int">int</a>) semaphore</pre>
+			
+			
+		
+			
+			
+			<h2 id="PPmap">func <a href="/target/ppmap.go?s=441:477#L10">PPmap</a></h2>
+			<pre>func PPmap(fm <a href="#Mathop">Mathop</a>, arr []<a href="/pkg/builtin/#float64">float64</a>)</pre>
+			<pre>Partitioned Funtion-&gt;Slice Mapping
+</pre>
+<p>
+Maps &#39;fm()&#39; onto each member of &#39;arr&#39; in-place
+Uses &#39;NumCPU()&#39; independent (non-load-balanced) goroutines
+</p>
+
+			
+		
+			
+			
+			<h2 id="PVecOperation">func <a href="/target/pvec.go?s=407:483#L9">PVecOperation</a></h2>
+			<pre>func PVecOperation(f <a href="#BiMathop">BiMathop</a>, arrOne []<a href="/pkg/builtin/#float64">float64</a>, arrTwo []<a href="/pkg/builtin/#float64">float64</a>) []<a href="/pkg/builtin/#float64">float64</a></pre>
+			<pre>Parallel Vector Operation
+</pre>
+<p>
+- Creates a new slice from two other slices according to &#39;f()&#39;
+- Uses NumCPU() goroutines for workload partioning (defaults to 2)
+</p>
+
+			
+		
+			
+			
+			<h2 id="Smap">func <a href="/target/ppmap.go?s=181:236#L1">Smap</a></h2>
+			<pre>func Smap(fm <a href="#Mathop">Mathop</a>, arr []<a href="/pkg/builtin/#float64">float64</a>, start <a href="/pkg/builtin/#int">int</a>, end <a href="/pkg/builtin/#int">int</a>)</pre>
+			<pre>Iterative Function-&gt;Slice Mapping
+</pre>
+<p>
+Maps a fuction onto an array on the values from
+&#39;start&#39; to &#39;end&#39; (typically &#39;0&#39; to &#39;len(arr)&#39;)
+No concurrency
+</p>
+
+			
+		
+		
+			
+			
+			<h2 id="BiMathop">type <a href="/target/mathtypes.go?s=136:180#L1">BiMathop</a></h2>
+			<pre>type BiMathop func(<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+BiMathop - Bivariate math function
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="BiVariateData">type <a href="/target/dataops.go?s=101:173#L4">BiVariateData</a></h2>
+			<pre>type BiVariateData struct {
+    Xs []<a href="/pkg/builtin/#float64">float64</a>
+    Ys []<a href="/pkg/builtin/#float64">float64</a>
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			<p>
+Struct for bivariate data (xs, ys)
+</p>
+
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="MakeBiVariateData">func <a href="/target/dataops.go?s=175:240#L10">MakeBiVariateData</a></h3>
+				<pre>func MakeBiVariateData(xs []<a href="/pkg/builtin/#float64">float64</a>, ys []<a href="/pkg/builtin/#float64">float64</a>) *<a href="#BiVariateData">BiVariateData</a></pre>
+				
+				
+			
+
+			
+				
+				<h3 id="BiVariateData.Len">func (*BiVariateData) <a href="/target/dataops.go?s=308:341#L16">Len</a></h3>
+				<pre>func (b *<a href="#BiVariateData">BiVariateData</a>) Len() <a href="/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="BiVariateData.Less">func (*BiVariateData) <a href="/target/dataops.go?s=364:407#L20">Less</a></h3>
+				<pre>func (b *<a href="#BiVariateData">BiVariateData</a>) Less(i, j <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="BiVariateData.Sort">func (*BiVariateData) <a href="/target/dataops.go?s=605:635#L34">Sort</a></h3>
+				<pre>func (b *<a href="#BiVariateData">BiVariateData</a>) Sort()</pre>
+				
+				
+				
+			
+				
+				<h3 id="BiVariateData.Swap">func (*BiVariateData) <a href="/target/dataops.go?s=479:517#L28">Swap</a></h3>
+				<pre>func (b *<a href="#BiVariateData">BiVariateData</a>) Swap(i, j <a href="/pkg/builtin/#int">int</a>)</pre>
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Condenser">type <a href="/target/mathtypes.go?s=233:271#L2">Condenser</a></h2>
+			<pre>type Condenser func([]<a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Condenser - turns an array into a single element
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="CubicSplineInterpolation">type <a href="/target/interpLib.go?s=528:607#L16">CubicSplineInterpolation</a></h2>
+			<pre>type CubicSplineInterpolation struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			<p>
+CubicSplineInterpolation type def
+points to BiVariateData and contains
+an array of coefficients used for evaluating
+the interpolation, its derivatives, and its
+definite integral
+</p>
+
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="CubicSpline">func <a href="/target/interpLib.go?s=1039:1097#L34">CubicSpline</a></h3>
+				<pre>func CubicSpline(d <a href="#BiVariateData">BiVariateData</a>) <a href="#CubicSplineInterpolation">CubicSplineInterpolation</a></pre>
+				<p>
+Default constructor for CubicSplineInterpolation
+Returns a fully-formed CubicSplineInterpolation from
+the data containe in &#39;d&#39;
+</p>
+<p>
+*Note: this is a &#39;natural&#39; cubic spline (meaning that
+points evaluated outside the data endpoints are extrapolated
+linearly)
+</p>
+<p>
+Feeds values to getCubicSplinCoeffs() that are equivalent to
+the right-hand side of the matrix equation (18) referenced in:
+<a href="http://mathworld.wolfram.com/CubicSpline.html">http://mathworld.wolfram.com/CubicSpline.html</a>
+</p>
+
+				
+			
+
+			
+				
+				<h3 id="CubicSplineInterpolation.DDF">func (CubicSplineInterpolation) <a href="/target/interpLib.go?s=2303:2359#L91">DDF</a></h3>
+				<pre>func (s <a href="#CubicSplineInterpolation">CubicSplineInterpolation</a>) DDF(x <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+				<p>
+Second derivative evaluated at &#39;x&#39;
+</p>
+
+				
+				
+			
+				
+				<h3 id="CubicSplineInterpolation.DF">func (CubicSplineInterpolation) <a href="/target/interpLib.go?s=1881:1936#L73">DF</a></h3>
+				<pre>func (s <a href="#CubicSplineInterpolation">CubicSplineInterpolation</a>) DF(x <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+				<p>
+First derivative of interpolated data
+evaluated at &#39;x&#39;
+</p>
+
+				
+				
+			
+				
+				<h3 id="CubicSplineInterpolation.F">func (CubicSplineInterpolation) <a href="/target/interpLib.go?s=1460:1514#L54">F</a></h3>
+				<pre>func (s <a href="#CubicSplineInterpolation">CubicSplineInterpolation</a>) F(x <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+				<p>
+Returns the interpolated value of &#39;x&#39;
+on the data pointed to by &#39;s&#39;
+</p>
+
+				
+				
+			
+				
+				<h3 id="CubicSplineInterpolation.Integral">func (CubicSplineInterpolation) <a href="/target/interpLib.go?s=2762:2834#L109">Integral</a></h3>
+				<pre>func (s <a href="#CubicSplineInterpolation">CubicSplineInterpolation</a>) Integral(a <a href="/pkg/builtin/#float64">float64</a>, b <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+				<p>
+Returns the definite integral of a cubic spline
+evaluated from &#39;a&#39; to &#39;b&#39;
+</p>
+
+				
+				
+			
+		
+			
+			
+			<h2 id="FtBiMathop">type <a href="/target/mathtypes.go?s=642:693#L14">FtBiMathop</a></h2>
+			<pre>type FtBiMathop func(<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#float64">float64</a>) chan <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+FtBiMathop - a future BiMathop (returned on a channel)
+</p>
+
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="MakeFtBiMathop">func <a href="/target/mathtypes.go?s=1170:1212#L36">MakeFtBiMathop</a></h3>
+				<pre>func MakeFtBiMathop(f <a href="#BiMathop">BiMathop</a>) <a href="#FtBiMathop">FtBiMathop</a></pre>
+				<p>
+Makes a future from a BiMathop; returns a channel
+</p>
+
+				
+			
+
+			
+		
+			
+			
+			<h2 id="FtCondenser">type <a href="/target/mathtypes.go?s=754:799#L17">FtCondenser</a></h2>
+			<pre>type FtCondenser func([]<a href="/pkg/builtin/#float64">float64</a>) chan <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+FtCondenser - a future Condenser (returned on a channel)
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="FtLinop">type <a href="/target/mathtypes.go?s=852:895#L20">FtLinop</a></h2>
+			<pre>type FtLinop func([]<a href="/pkg/builtin/#float64">float64</a>) chan []<a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+FtLinop - a future Linop (returned on a channel)
+</p>
+
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="MakeFtLinop">func <a href="/target/mathtypes.go?s=1414:1447#L49">MakeFtLinop</a></h3>
+				<pre>func MakeFtLinop(f <a href="#Linop">Linop</a>) <a href="#FtLinop">FtLinop</a></pre>
+				<p>
+Makes a future from a Linop; returns a channel
+</p>
+
+				
+			
+
+			
+		
+			
+			
+			<h2 id="FtMathop">type <a href="/target/mathtypes.go?s=543:583#L11">FtMathop</a></h2>
+			<pre>type FtMathop func(<a href="/pkg/builtin/#float64">float64</a>) chan <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+FtMathop - a future Mathop (returned on a channel)
+</p>
+
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="MakeFtMathop">func <a href="/target/mathtypes.go?s=943:979#L23">MakeFtMathop</a></h3>
+				<pre>func MakeFtMathop(f <a href="#Mathop">Mathop</a>) <a href="#FtMathop">FtMathop</a></pre>
+				<p>
+MakeFtMathop - makes a future from a Mathop
+</p>
+
+				
+			
+
+			
+		
+			
+			
+			<h2 id="Linop">type <a href="/target/mathtypes.go?s=332:368#L5">Linop</a></h2>
+			<pre>type Linop func([]<a href="/pkg/builtin/#float64">float64</a>) []<a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Linop - takes an array, yields an array of the same size
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Mathop">type <a href="/target/mathtypes.go?s=64:97#L1">Mathop</a></h2>
+			<pre>type Mathop func(<a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Mathop - Univariate math function
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Vecop">type <a href="/target/mathtypes.go?s=441:488#L8">Vecop</a></h2>
+			<pre>type Vecop func([]<a href="/pkg/builtin/#float64">float64</a>, []<a href="/pkg/builtin/#float64">float64</a>) []<a href="/pkg/builtin/#float64">float64</a></pre>
+			<p>
+Vecop - operates on two arrays of the same size to yield a new array
+</p>
+
+
+			
+
+			
+
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="VectorField">type <a href="/target/mathtypes.go?s=2254:2293#L93">VectorField</a></h2>
+			<pre>type VectorField struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+				
+				<h3 id="VectorField.Val">func (VectorField) <a href="/target/mathtypes.go?s=2295:2344#L97">Val</a></h3>
+				<pre>func (v <a href="#VectorField">VectorField</a>) Val(pts []<a href="/pkg/builtin/#float64">float64</a>) []<a href="/pkg/builtin/#float64">float64</a></pre>
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+
