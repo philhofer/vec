@@ -1,7 +1,8 @@
 package vec 
 
-
 func Arange(start float64, stop float64, N int) []float64 {
+	enforceStrict(start)
+	enforceStrict(stop)
 	f := make([]float64, N)
 	h := (stop - start) / float64(N)
 	for i := range f {
@@ -35,6 +36,7 @@ func CubicSpline(d BiVariateData) CubicSplineInterpolation {
 
 //Find interpolated f(x)
 func (s CubicSplineInterpolation) F(x float64) float64{
+	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
 	t := (x - s.data.Xs[i])/(s.data.Xs[i1] - s.data.Xs[i])
 	yi, yi1 := s.data.Ys[i], s.data.Ys[i1]
@@ -49,6 +51,7 @@ func (s CubicSplineInterpolation) F(x float64) float64{
 
 //Find interpolated df(x)/dx
 func (s CubicSplineInterpolation) DF(x float64) float64 {
+	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
 	fin := s.data.Xs[i1]
 	start := s.data.Xs[i]
@@ -63,6 +66,7 @@ func (s CubicSplineInterpolation) DF(x float64) float64 {
 }
 
 func (s CubicSplineInterpolation) DDF(x float64) float64 {
+	enforceStrict(x)
 	i, i1 := s.data.findXBounds(x)
 	fin := s.data.Xs[i1]
 	start := s.data.Xs[i]
@@ -76,6 +80,8 @@ func (s CubicSplineInterpolation) DDF(x float64) float64 {
 }
 
 func (s CubicSplineInterpolation) Integral(a float64, b float64) float64 {
+	enforceStrict(a)
+	enforceStrict(b)
 	ia, ia1 := s.data.findXBounds(a)
 	ib, ib1 := s.data.findXBounds(b)
 

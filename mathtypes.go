@@ -1,5 +1,7 @@
 package vec
 
+import "math"
+
 //Mathop - Univariate math function
 type Mathop func(float64) float64
 
@@ -80,6 +82,11 @@ func Fold(f BiMathop, vec []float64) float64 {
 	}
 }
 
+func enforceStrict(a float64) {
+	if math.IsInf(a, 0) || math.IsNaN(a) {
+		panic("Inf/-Inf/NaN was used in place of a float64")
+	}
+}
 
 //Romberg Integration
 //func romberg_integrate(f Mathop, start float64, end float64) float64 {}
