@@ -75,6 +75,57 @@ func (s CubicSplineInterpolation) DDF(x float64) float64 {
 	return (2*c + 6*d*t)/((fin-start)*(fin-start))
 }
 
+func (s CubicSplineInterpolation) Integral(a float64, b float64) float64 {
+	ia, ia1 := s.data.findXBounds(a)
+	ib, ib1 := s.data.findXBounds(b)
+
+	//t1 - t up to nearest datapoint
+	t1 := (a - s.data.Xs[ia])/(s.data.Xs[ia1] - s.data.Xs[ia])
+	//t2 - t after last datapoint
+	t2 := (b - s.data.Xs[ib])/(s.data.Xs[ib1] - s.data.Xs[ib])
+	out := 0.0
+
+	//context before first datapoint in integral range
+	for {
+		yi, yi1 := s.data.Ys[ia], s.data.Ys[ia1]
+		Di, Di1 := s.coeffs[ia], s.coeffs[ia1]
+		a := yi
+		b := Di
+		c := 3*(yi1 - yi) - 2*Di - Di1
+		d := 2*(yi - yi1) + Di + Di1
+		
+		out += (s.data.Xs[ia1] - s.data.Xs[ia])*(a + (b/2.0) + (c/3.0) + (d/4.0) - a*t1 - (b*t1*t1)/2.0 - (c*t1*t1*t1)/3.0 - (d*t1*t1*t1*t1)/4.0)
+		break
+	}
+
+	//middle contexts (within datapoint & integral range)
+	for i:=ia+1; i<ib; i++ {
+		yi, yi1 := s.data.Ys[i], s.data.Ys[i+1]
+		Di, Di1 := s.coeffs[i], s.coeffs[i+1]
+		a := yi
+		b := Di
+		c := 3*(yi1 - yi) - 2*Di - Di1
+		d := 2*(yi - yi1) + Di + Di1
+
+		out += (s.data.Xs[i+1] - s.data.Xs[i])*(a + (b/2.0) + (c/3.0) + (d/4.0))
+	}
+	
+	//context after last datapoint in integral range
+	for {
+		yi, yi1 := s.data.Ys[ib], s.data.Ys[ib1]
+		Di, Di1 := s.coeffs[ib], s.coeffs[ib1]
+		a := yi
+		b := Di
+		c := 3*(yi1 - yi) - 2*Di - Di1
+		d := 2*(yi - yi1) + Di + Di1
+
+		out += (a*t2 + (b*t2*t2)/2.0 + (c*t2*t2*t2)/3.0 + (d*t2*t2*t2*t2)/4.0)*(s.data.Xs[ib1] - s.data.Xs[ib])
+		break
+	}
+
+	return out
+}
+
 func makeConstVec(a float64, N int) []float64{
 	out := make([]float64, N)
 	for i := range out {
