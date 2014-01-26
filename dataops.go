@@ -4,10 +4,6 @@ import "sort"
 
 /*
 Discreet Data Operations
-
-
-
-
 */
 
 //Struct for bivariate data (xs, ys)
@@ -17,16 +13,27 @@ type BiVariateData struct {
 	isSorted bool
 }
 
+/*
+Convert separate 'xs' and 'ys' arrays into a BiVariateData object
+
+-- 'xs' and 'ys' should be the same length
+-- sorts data by x-value automatically
+
+NOTE: sorting is done on slices, which means that 'xs' and 'ys' may be changed
+by calling this function
+*/
 func MakeBiVariateData(xs []float64, ys []float64) *BiVariateData {
 	out := BiVariateData{xs, ys, false}
 	out.Sort()
 	return &out
 }
 
+//Len for Sort interface
 func (b *BiVariateData) Len() int{
 	return len(b.Xs)
 }
 
+//Less for Sort interface
 func (b *BiVariateData) Less(i, j int) bool {
 	if b.Xs[i] < b.Xs[j] {
 		return true
@@ -35,12 +42,14 @@ func (b *BiVariateData) Less(i, j int) bool {
 	}
 }
 
+//Swap for Sort interface
 func (b *BiVariateData) Swap(i, j int) {
 	b.Xs[i], b.Xs[j] = b.Xs[j], b.Xs[i]
 	b.Ys[i], b.Ys[j] = b.Ys[j], b.Ys[i]
 	return
 }
 
+//Sorts b by ascending x value
 func (b *BiVariateData) Sort() {
 	//edge case 1
 	if b.isSorted {
@@ -56,6 +65,14 @@ func (b *BiVariateData) Sort() {
 	sort.Sort(b)
 
 	b.isSorted = true
+}
+
+//Implement XYer interface for plotinum.plotter
+func (b *BiVariateData) XY(n int) (x, y float64) {
+	if n >= b.Len() || n < 0 { panic("plotinum.plotter.XYer indexed beyond bounds") }
+	x = b.Xs[n]
+	y = b.Ys[n]
+	return
 }
 
 func (b *BiVariateData) findXBounds(x float64) (int, int) {
@@ -76,10 +93,8 @@ func (b *BiVariateData) findXBounds(x float64) (int, int) {
 }
 
 
-/*
+/* TODO:
 func DiscreetConvolve(dat []float64, conv []float64) []float64 {}
 
 Returns a discreet convolution of 'conv' on 'dat'
-
-
 */
