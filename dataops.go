@@ -58,16 +58,16 @@ func (b *BiVariateData) Sort() {
 	b.isSorted = true
 }
 
-func (b BiVariateData) findXBounds(x float64) (int, int) {
+func (b *BiVariateData) findXBounds(x float64) (int, int) {
 	if !b.isSorted {b.Sort()}
 	l := len(b.Xs)
 
 	//edge cases
-	if x > b.Xs[l-1] { return l-2, l-1 }
-	if x < b.Xs[0] { return 0, 1 }
+	if x >= b.Xs[l-1] { return l-2, l-1 }
+	if x <= b.Xs[0] { return 0, 1 }
 
 	out := 0
-	for b.Xs[out] < x {
+	for b.Xs[out] < x && out < l-2 {
 		out++
 	}
 

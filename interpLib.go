@@ -1,13 +1,25 @@
 package vec 
 
+import "math"
+
 /*
 Return a slice of length N 
 with equally-spaced values from 'start' to 'stop'
 (non-inclusive)
 */
+
+func notRat(a float64) bool {
+	if math.IsNaN(a) || math.IsInf(a, 0) {
+		return true
+	}
+	return false
+}
+
 func Arange(start float64, stop float64, N int) []float64 {
-	enforceStrict(start)
-	enforceStrict(stop)
+	if notRat(start) || notRat(stop) {
+		return []float64{}
+	}
+	if N==0 { return []float64{} }
 	f := make([]float64, N)
 	h := (stop - start) / float64(N)
 	for i := range f {
@@ -18,7 +30,7 @@ func Arange(start float64, stop float64, N int) []float64 {
 
 /*
 CubicSplineInterpolation type def
-points to BiVariateData and contains
+points to a BiVariateData container and contains
 an array of coefficients used for evaluating
 the interpolation, its derivatives, and its
 definite integral
@@ -44,6 +56,13 @@ http://mathworld.wolfram.com/CubicSpline.html
 func CubicSpline(d BiVariateData) CubicSplineInterpolation {
 	spline := CubicSplineInterpolation{data: &d}
 	N := len(d.Ys)
+
+	//Edge case - len(Ys) is zero
+	//Return default contructor
+	if N == 0 {
+		return spline
+	}
+
 	fs := make([]float64, N)
 	fs[0] = 3*(d.Ys[1] - d.Ys[0])
 	for i:=1; i<(N-1); i++ {
@@ -62,7 +81,11 @@ Returns the interpolated value of 'x'
 on the data pointed to by 's'
 */
 func (s CubicSplineInterpolation) F(x float64) float64{
-	enforceStrict(x)
+	//Edge case - x is not rational
+	if notRat(x) {
+		return math.NaN()
+	}
+
 	i, i1 := s.data.findXBounds(x)
 	t := (x - s.data.Xs[i])/(s.data.Xs[i1] - s.data.Xs[i])
 	yi, yi1 := s.data.Ys[i], s.data.Ys[i1]
@@ -81,7 +104,11 @@ evaluated at 'x'
 
 */
 func (s CubicSplineInterpolation) DF(x float64) float64 {
-	enforceStrict(x)
+	//Edge case - x is not rational
+	if notRat(x) {
+		return math.NaN()
+	}
+
 	i, i1 := s.data.findXBounds(x)
 	fin := s.data.Xs[i1]
 	start := s.data.Xs[i]
@@ -99,7 +126,11 @@ func (s CubicSplineInterpolation) DF(x float64) float64 {
 Second derivative evaluated at 'x'
 */
 func (s CubicSplineInterpolation) DDF(x float64) float64 {
-	enforceStrict(x)
+	
+	if notRat(x) {
+		return math.NaN()
+	}
+
 	i, i1 := s.data.findXBounds(x)
 	fin := s.data.Xs[i1]
 	start := s.data.Xs[i]
@@ -115,10 +146,17 @@ func (s CubicSplineInterpolation) DDF(x float64) float64 {
 /*
 Returns the definite integral of a cubic spline
 evaluated from 'a' to 'b'
+
+*Note: 'a' and 'b' must be rational
+(can't be +/-Inf -- will return NaN)
 */
 func (s CubicSplineInterpolation) Integral(a float64, b float64) float64 {
-	enforceStrict(a)
-	enforceStrict(b)
+	
+	//Does not support +/- Inf bounds
+	if notRat(a) || notRat(b) { 
+		return math.NaN()
+	}
+
 	ia, ia1 := s.data.findXBounds(a)
 	ib, ib1 := s.data.findXBounds(b)
 
