@@ -20,9 +20,10 @@ func trap(f Mathop, a float64, b float64, N int) float64 {
 /*
 Performs Romberg integration on a Mathop
 
-Returns the integral evaluated from 'a' to 'b', and error
+Returns the integral evaluated from 'a' to 'b', and convergence
 
-If error >> 0, then it's possible the integral does not converge
+If conv = false, the integral did not converge with
+If conv = true, the integral is accurate to at least 15 decimal places.
 */
 func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 	conv = false
@@ -42,9 +43,14 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 		Ik := make([]float64, K-k)
 		
 		if k == 0 {
-			for i := range Ik {
-				Ik[i] = trap(f, a, b, int(math.Pow(2, float64(i))))
+			s := NewSem(K)
+			for j := range Ik {
+				go func(i int) {
+					Ik[i] = trap(f, a, b, int(math.Pow(2, float64(i))))
+					s.Signal()
+				}(j)
 			}
+			s.Wait(K)
 		} else {
 			for i := range Ik {
 				j := i+1
