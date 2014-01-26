@@ -7,7 +7,7 @@ func myFunc(x float64) float64 {
 }
 
 func TestTrapezoids(t *testing.T) {
-	out := trap(myFunc, 0.0, 3.0, 500)
+	out := trap(myFunc, 0.0, 3.0, 256)
 	if out - 9.0 > 1E-4 {
 		t.Error("Trapezoids didn't integrate accurately enough.")
 		t.Error("Expected: 9.0")

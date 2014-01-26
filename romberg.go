@@ -59,6 +59,10 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 			if err <= 1E-16 {
 				return out, true
 			}
+		} else {
+			if math.Abs(Ik[K-k-2]-Ik[K-k-1]) <= 1E-16 {
+				return out, true
+			}
 		}
 
 		Ip = Ik
