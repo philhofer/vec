@@ -5,18 +5,15 @@ import "math"
 //Trapezoidal rule - 'f(x)' from 'a' to 'b' with N steps
 func trap(f Mathop, a float64, b float64, N int) float64 {
 	if N <= 0 { return a }
-	if N == 1 { return (f(b) - f(a))/2 }
+	if N == 1 { return (b-a)*(f(b) + f(a))/2 }
 	
 	out := 0.0
 	h := (b-a)/float64(N)
-	x1s := Arange(a, b, N)
-	x2s := Arange(a+h, b+h, N)
-	PPmap(f, x1s)
-	PPmap(f, x2s)
-	for i := range x1s {
-		out += x1s[i] + x2s[i]
+	xs := Arange(a, b+h, N+1)
+	PPmap(f, xs)
+	for i:=0; i<N; i++ {
+		out += xs[i] + xs[i+1]
 	}
-	out -= (h/2)*(f(a) + f(b))
 	return out*(h/2.0)
 }
 
@@ -27,8 +24,8 @@ Returns the integral evaluated from 'a' to 'b', and error
 
 If error >> 0, then it's possible the integral does not converge
 */
-func Integral(f Mathop, a float64, b float64) (out float64, err float64) {
-	err = math.Inf(1)
+func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
+	conv = false
 	out = 0.0
 	const K int = 10
 	if a == b { return }
@@ -56,17 +53,16 @@ func Integral(f Mathop, a float64, b float64) (out float64, err float64) {
 			}
 		}
 
-		if len(Ik)>1 {
-			err = math.Abs(Ik[K-k-2] - Ik[K-k-1])
-		}
-		out = Ik[K-k-1]
-		
-		if err < 2E-16 {
-			return out, err
+		out := Ik[K-k-1]
+		if k > 0 {
+			err := math.Abs(Ik[K-k-1]-Ip[K-k])
+			if err <= 1E-16 {
+				return out, true
+			}
 		}
 
 		Ip = Ik
 	}
 
-	return out, err
+	return out, false
 }

@@ -16,11 +16,10 @@ func TestTrapezoids(t *testing.T) {
 }
 
 func TestRomberg(t *testing.T) {
-	out, err := Integral(myFunc, 0.0, 3.0)
-	if err > 2E-16 {
+	out, conv := Integral(myFunc, 0.0, 3.0)
+	if !conv {
 		t.Error("Romberg Integration failed to converge.")
 		t.Error("Expected: 9.0")
 		t.Error("Got:", out)
-		t.Error("Err:", err)
 	}
 }
