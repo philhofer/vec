@@ -1,6 +1,6 @@
 Go-Vec README
 ====================
-
+[![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
 Go-Vec is a work in progress.
 
 Objectives
