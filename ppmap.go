@@ -19,12 +19,11 @@ Uses 'NumCPU()' independent (non-load-balanced) goroutines
 */
 func PPmap(fm Mathop, arr []float64){
 	NTHREADS := runtime.NumCPU()
-
 	//test for nonsense
 	if NTHREADS <= 0 {
 		NTHREADS = 2
 	}
-
+	runtime.GOMAXPROCS(NTHREADS)
 	l := len(arr)
 	batch_size := l / NTHREADS
 	rem := l % NTHREADS
