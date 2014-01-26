@@ -28,7 +28,7 @@ xs := vec.Arange(0, 5, 100)
 ys := vec.Arange(0, 5, 100)
 
 //map 'myFunc()' onto 'ys' (very fast; uses NumCPU() parallel goroutines)
-vec.PPmap(myPoly, ys)
+vec.PPmap(myFunc, ys)
 
 //create a BiVariateData object from our data (returns a pointer)
 bvd := vec.MakeBiVariateData(xs, ys)
