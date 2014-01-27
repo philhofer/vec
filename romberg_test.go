@@ -1,9 +1,14 @@
 package vec
 
 import "testing"
+import "math"
 
 func myFunc(x float64) float64 {
 	return x*x
+}
+
+func myInfFunc(x float64) float64 {
+	return math.Exp(-5.0*x)
 }
 
 func TestTrapezoids(t *testing.T) {
@@ -21,5 +26,16 @@ func TestRomberg(t *testing.T) {
 		t.Error("Romberg Integration failed to converge.")
 		t.Error("Expected: 9.0")
 		t.Error("Got:", out)
+	}
+}
+
+
+func TestInfRomberg(t *testing.T) {
+	out, conv := Integral(myInfFunc, 0, math.Inf(1))
+	if !conv {
+		t.Error("Romberg Integration didn't converge.")
+		t.Error("Testing exp(-5x) from 0 to +Inf.")
+		t.Error("Expecting: 0.2")
+		t.Error("Got", out)
 	}
 }

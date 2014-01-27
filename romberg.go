@@ -1,6 +1,9 @@
 package vec
 
-import "math"
+import (
+	"math"
+//	"fmt"
+)
 
 //Trapezoidal rule - 'f(x)' from 'a' to 'b' with N steps
 func trap(f Mathop, a float64, b float64, N int) float64 {
@@ -35,7 +38,7 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 	}
 
 	if math.IsInf(a, 0) || math.IsInf(b, 0) {
-		//TODO: transform f, a, b
+		return rangeTransform(f, a, b)
 	}
 
 	var Ip []float64
@@ -75,4 +78,42 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 	}
 
 	return out, false
+}
+
+func rangeTransform(f Mathop, a float64, b float64) (float64, bool){
+	
+	flipped := false
+	if a > b {
+		a, b = b, a
+		flipped = true
+	}
+
+	X := func(z float64) float64 {
+		return -z/((z-1)*(z+1))
+	}
+
+	fnew := func(z float64) float64 {
+		return f(X(z))*(z*z + 1)/math.Pow((z*z -1), 2.0)
+	}
+	
+	var anew, bnew float64
+	if a==0 {
+		anew = 0.0
+	} else if math.IsInf(a, -1) {
+		anew = -1.0+(1E-15)
+	} else {
+		anew = (math.Sqrt(4*a*a + 1) - 1.0)/(2*a)
+	}
+	if b == 0 {
+		bnew = 0.0
+	} else if math.IsInf(b, 1) {
+		bnew = 1.0-(1E-15)
+	} else {
+		bnew = (math.Sqrt(4*b*b + 1) - 1.0)/(2*b)
+	}
+	
+	out, conv := Integral(fnew, anew, bnew)
+	if flipped { out *= -1.0 }
+
+	return out, conv
 }
