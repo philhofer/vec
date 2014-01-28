@@ -8,11 +8,18 @@ package vec
 FUNCTIONS
 
 func Arange(start float64, stop float64, N int) []float64
-    Return a slice of length N with equally-spaced values from 'start' to
-    'stop' (non-inclusive)
 
 func Fold(f BiMathop, vec []float64) float64
     Canonical foldl - folds from vec[0] to vec[n]
+
+func Integral(f Mathop, a float64, b float64) (out float64, conv bool)
+    Performs Romberg integration on a Mathop
+
+    Returns the integral evaluated from 'a' to 'b', and convergence.
+    Supports (+/-)Inf as bounds.
+
+    If conv = false, the integral did not converge with If conv = true, the
+    integral is accurate to at least 15 decimal places.
 
 func MPmap(fm Mathop, arr []float64)
 
@@ -58,15 +65,29 @@ type BiVariateData struct {
 
 
 func MakeBiVariateData(xs []float64, ys []float64) *BiVariateData
+    Convert separate 'xs' and 'ys' arrays into a BiVariateData object
+
+    -- 'xs' and 'ys' should be the same length -- sorts data by x-value
+    automatically
+
+    NOTE: sorting is done on slices, which means that 'xs' and 'ys' may be
+    changed by calling this function
 
 
 func (b *BiVariateData) Len() int
+    Len for Sort interface
 
 func (b *BiVariateData) Less(i, j int) bool
+    Less for Sort interface
 
 func (b *BiVariateData) Sort()
+    Sorts b by ascending x value
 
 func (b *BiVariateData) Swap(i, j int)
+    Swap for Sort interface
+
+func (b *BiVariateData) XY(n int) (x, y float64)
+    Implement XYer interface for plotinum.plotter
 
 
 type Condenser func([]float64) float64
@@ -77,9 +98,9 @@ type Condenser func([]float64) float64
 type CubicSplineInterpolation struct {
     // contains filtered or unexported fields
 }
-    CubicSplineInterpolation type def points to BiVariateData and contains
-    an array of coefficients used for evaluating the interpolation, its
-    derivatives, and its definite integral
+    CubicSplineInterpolation type def points to a BiVariateData container
+    and contains an array of coefficients used for evaluating the
+    interpolation, its derivatives, and its definite integral
 
 
 func CubicSpline(d BiVariateData) CubicSplineInterpolation
@@ -106,6 +127,8 @@ func (s CubicSplineInterpolation) F(x float64) float64
 func (s CubicSplineInterpolation) Integral(a float64, b float64) float64
     Returns the definite integral of a cubic spline evaluated from 'a' to
     'b'
+
+    *Note: 'a' and 'b' must be rational (can't be +/-Inf -- will return NaN)
 
 
 type FtBiMathop func(float64, float64) chan float64
@@ -153,14 +176,6 @@ type Mathop func(float64) float64
 type Vecop func([]float64, []float64) []float64
     Vecop - operates on two arrays of the same size to yield a new array
 
-
-
-type VectorField struct {
-    // contains filtered or unexported fields
-}
-
-
-func (v VectorField) Val(pts []float64) []float64
 
 
 

@@ -27,7 +27,8 @@ func trap(f Mathop, a float64, b float64, N int) float64 {
 /*
 Performs Romberg integration on a Mathop
 
-Returns the integral evaluated from 'a' to 'b', and convergence
+Returns the integral evaluated from 'a' to 'b', and convergence.
+Supports (+/-)Inf as bounds.
 
 If conv = false, the integral did not converge with
 If conv = true, the integral is accurate to at least 15 decimal places.
@@ -37,10 +38,10 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 	out = 0.0
 	const K int = 10
 	if a == b {
-		return
+		return out, true
 	}
 	if math.IsNaN(a) || math.IsNaN(b) {
-		return
+		return math.NaN(), false
 	}
 
 	if math.IsInf(a, 0) || math.IsInf(b, 0) {
