@@ -1,7 +1,7 @@
 Go-Vec README
 ====================
 [![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
-Go-Vec is a work in progress.
+Go-Vec is currently in the development stage. Source is covered by the Mozilla Public License v. 2.0.
 
 Objectives
 ------------
@@ -10,12 +10,13 @@ Objectives
   scipy), written in Go
 * Functionality including, but not limited to, integration, differentiation, interpolation, matrix operations, local max/minimization, global max/minization, optimization
 
-Example
+Example - Current Functionality
 -----------
 Here were going to define a function, map it onto a set of points, create a BiVariateData object from those points, and then create a CubicSplineInterpolation object with which we can evaluate derivatives and integrals.
 
 ```
 import "vec"
+import "math"
 
 //our function
 func myFunc(x float64) float64 {
@@ -44,7 +45,14 @@ dx := spl.DF(3.2678)
 ddx := spl.DDF(3.2678)
 
 //evaluate the integral of myFunc() from 1 to 4
-Ix := spl.Integrate(1, 4)
+Ix := spl.Integral(1, 4)
+
+//we can also evaluate infinite bounds!
+func myinfFunc(x float64) float64 {
+     return math.Exp(-5.0*x)
+}
+
+num := vec.Integral(myinfFunc, 0, math.Inf(1))
 
 ```
 
