@@ -1,3 +1,4 @@
+//Go-Vec is a higher-level math package for Go.
 package vec
 
 //Mathop - Univariate math function
