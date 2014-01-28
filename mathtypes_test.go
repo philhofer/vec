@@ -14,11 +14,11 @@ func mult(x float64, y float64) float64 {
 
 //Mathops
 func square(x float64) float64 {
-	return x*x
+	return x * x
 }
 
 func divbytwo(x float64) float64 {
-	return x/2
+	return x / 2
 }
 
 //Condenser
@@ -33,7 +33,7 @@ func sum(x []float64) float64 {
 var arrOne []float64 = []float64{1, 2, 3, 4}
 
 func compareFloat(x float64, y float64) bool {
-	if math.Abs(x - y) > 1E-15 {
+	if math.Abs(x-y) > 1E-15 {
 		return true
 	} else {
 		return false
@@ -59,8 +59,8 @@ func TestFtMathop(t *testing.T) {
 	c4 := sq_future(2.0)
 	c1 := divbytwo_future(2.0)
 
-	a := <- c4
-	b := <- c1
+	a := <-c4
+	b := <-c1
 	if compareFloat(a, 4.0) {
 		t.Error("MakeFtMathop failed on 'square'")
 	} else if compareFloat(b, 1.0) {
@@ -70,7 +70,6 @@ func TestFtMathop(t *testing.T) {
 	}
 }
 
-
 func TestFtBiMathop(t *testing.T) {
 	add_future := MakeFtBiMathop(add)
 	mult_future := MakeFtBiMathop(mult)
@@ -78,8 +77,8 @@ func TestFtBiMathop(t *testing.T) {
 	c1 := add_future(2.0, -5.6)
 	c2 := mult_future(12.0, 12.0)
 
-	a := <- c1
-	b := <- c2
+	a := <-c1
+	b := <-c2
 
 	if compareFloat(a, -3.6) {
 		t.Error("MakeFtBiMathop failed on 'add' -- Yielded", a)

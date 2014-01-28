@@ -4,16 +4,16 @@ import "testing"
 import "math"
 
 func myFunc(x float64) float64 {
-	return x*x
+	return x * x
 }
 
 func myInfFunc(x float64) float64 {
-	return math.Exp(-5.0*x)
+	return math.Exp(-5.0 * x)
 }
 
 func TestTrapezoids(t *testing.T) {
 	out := trap(myFunc, 0.0, 3.0, 256)
-	if out - 9.0 > 1E-4 {
+	if out-9.0 > 1E-4 {
 		t.Error("Trapezoids didn't integrate accurately enough.")
 		t.Error("Expected: 9.0")
 		t.Error("Got:", out)
@@ -28,7 +28,6 @@ func TestRomberg(t *testing.T) {
 		t.Error("Got:", out)
 	}
 }
-
 
 func TestInfRomberg(t *testing.T) {
 	out, conv := Integral(myInfFunc, 0, math.Inf(1))

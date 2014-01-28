@@ -20,7 +20,7 @@ func areSimilar(a float64, b float64) bool {
 	}
 }
 
-/* 
+/*
 Arange - yields N equally-spaced elements from a to b
 
 EDGE CASES:
@@ -28,26 +28,26 @@ EDGE CASES:
 */
 func TestArange(t *testing.T) {
 	zero := Arange(0, 1, 0)
-	if ! reflect.DeepEqual(zero, []float64{}) {
+	if !reflect.DeepEqual(zero, []float64{}) {
 		t.Error("Arange(x, y, 0) doesn't return []float64")
 	}
-	a := -rand.Float64()*1000
-	b := rand.Float64()*1000
-	n := rand.Intn(100000)+1
-	h := (b-a)/float64(n)
+	a := -rand.Float64() * 1000
+	b := rand.Float64() * 1000
+	n := rand.Intn(100000) + 1
+	h := (b - a) / float64(n)
 	many := Arange(a, b, n)
 	if areSimilar(many[0], a) {
 		//pass
 	} else {
 		t.Error("Arange doesn't start with the right value. Got", many[0], "Should be:", a)
 	}
-	
+
 	if areSimilar(many[n-1], b-h) {
 		//pass
 	} else {
 		t.Error("Arange doesn't end with the right value. Got:", many[n-1], "Should be:", b-h)
 	}
-	
+
 }
 
 /*
@@ -60,7 +60,7 @@ another empty struct literal
 func TestCubicSpline(t *testing.T) {
 	bvd := BiVariateData{}
 	spl := CubicSpline(bvd)
-	if ! reflect.DeepEqual(spl, CubicSplineInterpolation{data: &bvd}){
+	if !reflect.DeepEqual(spl, CubicSplineInterpolation{data: &bvd}) {
 		t.Error("CubicSpline(BiVariateData{}) didn't return CubicSplineInterpolation{data: &bvd}")
 	}
 }
@@ -102,17 +102,17 @@ func TestSplineOuts(t *testing.T) {
 
 	for i, _ := range xs {
 		yi := ys[i]
-		xi := xs[i] 
-		if ! areSimilar(yi, spl.F(xi)) {
+		xi := xs[i]
+		if !areSimilar(yi, spl.F(xi)) {
 			t.Error("Spline does not conform to yi = f(xi) rule")
 		}
-		if ! areSimilar(spl.coeffs[i], spl.DF(xi)*(20.0/500.0)) {
+		if !areSimilar(spl.coeffs[i], spl.DF(xi)*(20.0/500.0)) {
 			t.Error("Spline does not conform to Di*h = df(xi) rule")
 		}
 	}
 
 	//Check integration over (0, 20) with closed-form answer
-	relError := relativeError(1.0 - math.J0(20.0), spl.Integral(0.0, 20.0))
+	relError := relativeError(1.0-math.J0(20.0), spl.Integral(0.0, 20.0))
 	if relError > 1E-5 {
 		t.Error("Spline did not integrate accurately enough. Error:", relError)
 	}
@@ -124,10 +124,10 @@ func BenchmarkSpline(b *testing.B) {
 	ys := Arange(0, 10, 1000)
 
 	PPmap(math.Cos, ys)
-	
+
 	b.ResetTimer()
 	bvd := MakeBiVariateData(xs, ys)
-	for i := 0; i<b.N; i++ {
+	for i := 0; i < b.N; i++ {
 		spl := CubicSpline(*bvd)
 		spl.F(5.46827)
 		spl.DF(5.2908)

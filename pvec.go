@@ -6,7 +6,7 @@ import "runtime"
 
 */
 func simpleVO(f BiMathop, arrOne []float64, arrTwo []float64, outVec []float64, start int, end int) {
-	for i:=start; i<=end; i++ {
+	for i := start; i <= end; i++ {
 		outVec[i] = f(arrOne[i], arrTwo[i])
 	}
 	return
@@ -16,7 +16,7 @@ func simpleVO(f BiMathop, arrOne []float64, arrTwo []float64, outVec []float64, 
 - Creates a new slice from two other slices according to 'f()'
 - Uses NumCPU() goroutines for workload partioning (defaults to 2)
 */
-func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64{
+func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64 {
 	l := len(arrOne)
 	if l != len(arrTwo) {
 		panic("PVecOperation must be performed on slices of identical length.")
@@ -32,7 +32,6 @@ func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64{
 	rem := l % NTHREADS
 	outVec := make([]float64, l)
 
-
 	//Simple Case
 	if batch_size == 0 {
 		simpleVO(f, arrOne, arrTwo, outVec, 0, l-1)
@@ -40,10 +39,10 @@ func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64{
 	} else {
 		//Parallel Case
 		start := 0
-		end := batch_size-1
+		end := batch_size - 1
 		sem := NewSem(NTHREADS)
 
-		for i:=0; i<NTHREADS-1; i++ {
+		for i := 0; i < NTHREADS-1; i++ {
 			go func(s int, e int) {
 				simpleVO(f, arrOne, arrTwo, outVec, s, e)
 				sem.Signal()
@@ -51,7 +50,7 @@ func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64{
 			start += batch_size
 			end += batch_size
 		}
-		go func(s int, e int){
+		go func(s int, e int) {
 			simpleVO(f, arrOne, arrTwo, outVec, s, e)
 			sem.Signal()
 		}(start, end+rem)

@@ -104,7 +104,7 @@ type VectorField struct {
 	rule Linop
 }
 
-func (v VectorField) Val(pts []float64) []float64{
+func (v VectorField) Val(pts []float64) []float64 {
 	out := make([]float64, len(pts))
 	out = v.rule(pts)
 	return out

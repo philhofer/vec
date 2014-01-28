@@ -7,8 +7,8 @@ Maps a fuction onto an array on the values from
 'start' to 'end' (typically '0' to 'len(arr)')
 No concurrency
 */
-func Smap(fm Mathop, arr []float64, start int, end int){
-	for i:=start; i<end; i++ {
+func Smap(fm Mathop, arr []float64, start int, end int) {
+	for i := start; i < end; i++ {
 		arr[i] = fm(arr[i])
 	}
 }
@@ -17,7 +17,7 @@ func Smap(fm Mathop, arr []float64, start int, end int){
 Maps 'fm()' onto each member of 'arr' in-place
 Uses 'NumCPU()' independent (non-load-balanced) goroutines
 */
-func PPmap(fm Mathop, arr []float64){
+func PPmap(fm Mathop, arr []float64) {
 	NTHREADS := runtime.NumCPU()
 	//test for nonsense
 	if NTHREADS <= 0 {
@@ -36,10 +36,10 @@ func PPmap(fm Mathop, arr []float64){
 		sem := NewSem(NTHREADS)
 		start := 0
 		end := batch_size
-		
+
 		//Spawn (NTHREADS-1) goroutines with array of length 'batch_size'
-		for i:=0; i<NTHREADS-1; i++ {
-			go func(s int, e int){
+		for i := 0; i < NTHREADS-1; i++ {
+			go func(s int, e int) {
 				Smap(fm, arr, s, e)
 				sem.Signal()
 			}(start, end)
@@ -48,7 +48,7 @@ func PPmap(fm Mathop, arr []float64){
 		}
 
 		//Spawn last goroutine with array of length 'batch_size + rem'
-		go func(s int, e int){
+		go func(s int, e int) {
 			Smap(fm, arr, s, e)
 			sem.Signal()
 		}(start, end+rem)
@@ -57,4 +57,3 @@ func PPmap(fm Mathop, arr []float64){
 		return
 	}
 }
-
