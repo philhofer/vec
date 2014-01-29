@@ -1,6 +1,6 @@
-Go-Vec README
+Go-Vec [![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/ph\
+ilhofer/go-vec)
 ====================
-[![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
 Go-Vec is currently in the development stage. Source is covered by the Mozilla Public License v. 2.0.
 
 Objectives
