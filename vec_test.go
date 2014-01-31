@@ -89,7 +89,7 @@ func TestMPmapCos(t *testing.T) {
 	if localarr.match() {
 		return
 	} else {
-		t.Error("Cos() failed on MPmap. Produced:", localarr.in, "Expected:", localarr.out)
+		t.Error("Cos() failed on MPmap.")
 	}
 }
 
@@ -100,7 +100,7 @@ func TestSmapCos(t *testing.T) {
 	if localarr.match() {
 		return
 	} else {
-		t.Error("Cos() failed on Smap. Produced:", localarr.in, "Expected:", localarr.out)
+		t.Error("Cos() failed on Smap.")
 	}
 }
 

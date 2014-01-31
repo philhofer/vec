@@ -129,11 +129,50 @@ func (p *Poisson) PDF(k int) float64 {
 }
 
 func (p *Poisson) CDF(x float64) float64 {
-	//Need Chi-Squared
-	return 0.0
+	//Use normalized incomplete gamma function from specialfuncs
+	return G(math.Floor(x), p.lambda)
 }
 
-type ChiSquared struct {
-	k int
+func PoissonDist(lambda float64) *Poisson {
+	if lambda<=0 {
+		return nil
+	} 
+	return &Poisson{lambda}
 }
 
+type Gamma struct {
+	alpha float64
+	beta float64
+}
+
+//Gamma Distribution PDF
+func (g *Gamma) PDF(x float64) float64 {
+	if x <= 0 { return math.NaN() }
+	logp := g.alpha*math.Log(g.beta) + (g.alpha - 1.0)*math.Log(x) - x*g.beta - math.Lgamma(g.alpha)
+	return math.Exp(logp)
+}
+
+//Gamma Distribution CDF
+func (g *Gamma) CDF(x float64) float64 {
+	if x <= 0 { return math.NaN() }
+	return P(g.alpha, g.beta*x)
+}
+
+//Gamma Distribution Constructor
+func GammaDist(alpha float64, beta float64) *Gamma {
+	if alpha < 0 || beta < 0 {
+		return nil
+	}
+	return &Gamma{alpha, beta}
+}
+
+//Chi-squared Distribution Constructor
+//(Special case of Gamma Distribution Constructor)
+func ChiSquaredDist(v int) {
+	if v <= 0 {
+		return nil
+	}
+	alpha := float64(v)/2.0
+	beta := 0.5
+	return &Gamma{alpha, beta}
+}

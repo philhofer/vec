@@ -1,18 +1,22 @@
 package vec
 
-/* Massively Parallel Function-Slice Mapping
-Should be used for mapping 'expensive' functions
-onto short(ish) arrays in-place. Creates as many goroutines
-as there are floats in the array, so this bogs down for
-long arrays.
+import (
+	"vec/pool"
+	"runtime"
+)
+/* Load-balanced Parallel Function-Slice Mapping
+Creates a pool of workers that map 'fm' onto 'arr'
 */
 func MPmap(fm Mathop, arr []float64) {
-	sem := NewSem(len(arr))
-	for i := range arr {
-		go func(i int) {
+	p := pool.NewPool(runtime.NumCPU(), len(arr))
+	each := func(i int) pool.Proc {
+		return func() {
 			arr[i] = fm(arr[i])
-			sem.Signal()
-		}(i)
+	
+		}
 	}
-	sem.Wait(len(arr))
+	for i := range arr {
+		p.Send(each(i))
+	}
+	p.WaitAll()
 }
