@@ -1,6 +1,6 @@
-Go-Vec [![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
+vec for go [![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
 ====================
-Go-Vec is currently in the development stage. Source is covered by the Mozilla Public License v. 2.0.
+Vec is currently in the development stage. Source is covered by the Mozilla Public License v. 2.0.
 
 Objectives
 ------------
@@ -14,7 +14,7 @@ Example - Current Functionality
 Here were going to define a function, map it onto a set of points, create a BiVariateData object from those points, and then create a CubicSplineInterpolation object with which we can evaluate derivatives and integrals.
 
 ```
-import "vec"
+import "github.com/philhofer/vec"
 import "math"
 
 //our function
