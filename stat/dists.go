@@ -148,7 +148,8 @@ type Gamma struct {
 //Gamma Distribution PDF
 func (g *Gamma) PDF(x float64) float64 {
 	if x <= 0 { return math.NaN() }
-	logp := g.alpha*math.Log(g.beta) + (g.alpha - 1.0)*math.Log(x) - x*g.beta - math.Lgamma(g.alpha)
+	lga, _ := math.Lgamma(g.alpha)
+	logp := g.alpha*math.Log(g.beta) + (g.alpha - 1.0)*math.Log(x) - x*g.beta - lga
 	return math.Exp(logp)
 }
 
@@ -168,7 +169,7 @@ func GammaDist(alpha float64, beta float64) *Gamma {
 
 //Chi-squared Distribution Constructor
 //(Special case of Gamma Distribution Constructor)
-func ChiSquaredDist(v int) {
+func ChiSquaredDist(v int) *Gamma {
 	if v <= 0 {
 		return nil
 	}
