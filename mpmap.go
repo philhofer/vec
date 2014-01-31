@@ -1,7 +1,7 @@
 package vec
 
 import (
-	"vec/pool"
+	"github.com/philhofer/vec/pool"
 	"runtime"
 )
 /* Load-balanced Parallel Function-Slice Mapping
