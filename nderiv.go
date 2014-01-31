@@ -11,7 +11,7 @@ func Deriv(f Mathop, x float64) (out float64, conv bool) {
 	if math.IsNaN(x) || math.IsInf(x, 0) {
 		return math.NaN(), false
 	}
-	//"Optimum" h0 given O(h^6) accuracy
+	//"Optimum" h0 to reduce roundoff error @ O(h^6)
 	h0 := math.Sqrt(10.0) / 1000.0
 	A0 := func(h float64) float64 {
 		return (f(x+h) - f(x-h)) / (2 * h)
