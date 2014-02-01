@@ -65,7 +65,7 @@ func (n *Normal) PDF(x float64) float64 {
 
 //Normal Distribution CDF
 func (n *Normal) CDF(x float64) float64 {
-	return 0.5*(1.0 + math.Erf((x - n.mean)/(math.Sqrt(2*n.sigma*n.sigma))))
+	return 0.5*(1.0 + math.Erf((x - n.mean)/(math.Sqrt2*n.sigma)))
 }
 
 //To create a Normal struct
@@ -99,7 +99,7 @@ func (e *Exponential) CDF(x float64) float64 {
 
 //To create an Exponential struct
 func ExponentialDist(lambda float64) *Exponential {
-	if lambda >= 0 {
+	if lambda <= 0 {
 		return nil
 	}
 	return &Exponential{lambda}
@@ -129,8 +129,9 @@ func (p *Poisson) PDF(k int) float64 {
 }
 
 func (p *Poisson) CDF(x float64) float64 {
-	//Use normalized incomplete gamma function from specialfuncs
-	return G(math.Floor(x), p.lambda)
+	//Use regularized incomplete gamma function from specialfuncs
+	k := math.Floor(x)+1.0
+	return G(k, p.lambda)
 }
 
 func PoissonDist(lambda float64) *Poisson {

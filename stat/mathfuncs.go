@@ -42,10 +42,13 @@ func G(a float64, x float64) float64 {
 	//Evaluate Legendre's continued fraction
 	//using Lentz's algorithm
 	//Shift from Thomson and Barnett
+	//Continued fraction:
+	//http://functions.wolfram.com/GammaBetaErf/GammaRegularized/10/0003/
 	
 	b0 := x+1.0-a
 	C := 1.0/(10E-30)
 	D := 1.0/b0
+	if b0 == 0 { D = 10E30 }
 	f := D
 	//numerator
 	an := func(n int) float64 {
@@ -70,7 +73,7 @@ func G(a float64, x float64) float64 {
 		}
 	} 
 	lnGa, _ := math.Lgamma(a)
-	return math.Exp(-x+a*math.Log(x)-lnGa)*f
+	return f*math.Exp(-x+a*math.Log(x)-lnGa)
 }
 
 /*Incomplete Gamma Function P(a, x)
