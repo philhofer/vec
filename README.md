@@ -1,4 +1,4 @@
-vec for go [![Build Status](https://travis-ci.org/philhofer/go-vec.png?branch=master)](https://travis-ci.org/philhofer/go-vec)
+Vec for go [![Build Status](https://travis-ci.org/philhofer/vec.png?branch=master)](https://travis-ci.org/philhofer/vec)
 ====================
 Vec is currently in the development stage. Source is covered by the Mozilla Public License v. 2.0.
 
