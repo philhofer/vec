@@ -1,6 +1,9 @@
 package vec
 
-import "runtime"
+import (
+	"runtime"
+	"sync"
+)
 
 /* Simple Vector Operation
 
@@ -40,22 +43,23 @@ func PVecOperation(f BiMathop, arrOne []float64, arrTwo []float64) []float64 {
 		//Parallel Case
 		start := 0
 		end := batch_size - 1
-		sem := NewSem(NTHREADS)
+		wg := new(sync.WaitGroup)
+		wg.Add(NTHREADS)
 
 		for i := 0; i < NTHREADS-1; i++ {
 			go func(s int, e int) {
 				simpleVO(f, arrOne, arrTwo, outVec, s, e)
-				sem.Signal()
+				wg.Done()
 			}(start, end)
 			start += batch_size
 			end += batch_size
 		}
 		go func(s int, e int) {
 			simpleVO(f, arrOne, arrTwo, outVec, s, e)
-			sem.Signal()
+			wg.Done()
 		}(start, end+rem)
 
-		sem.Wait(NTHREADS)
+		wg.Wait()
 		return outVec
 	}
 

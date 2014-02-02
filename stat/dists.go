@@ -150,7 +150,7 @@ type Gamma struct {
 func (g *Gamma) PDF(x float64) float64 {
 	if x <= 0 { return math.NaN() }
 	lga, _ := math.Lgamma(g.alpha)
-	logp := g.alpha*math.Log(g.beta) + (g.alpha - 1.0)*math.Log(x) - x*g.beta - lga
+	logp := (g.alpha * math.Log(g.beta)) + ((g.alpha - 1.0) * math.Log(x)) - (x * g.beta) - lga
 	return math.Exp(logp)
 }
 
@@ -160,7 +160,7 @@ func (g *Gamma) CDF(x float64) float64 {
 	return P(g.alpha, g.beta*x)
 }
 
-//Gamma Distribution Constructor
+//Gamma Distribution Constructor - uses 'shape' and 'rate' parameters
 func GammaDist(alpha float64, beta float64) *Gamma {
 	if alpha < 0 || beta < 0 {
 		return nil

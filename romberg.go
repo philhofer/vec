@@ -2,6 +2,7 @@ package vec
 
 import (
 	"math"
+	"sync"
 	//	"fmt"
 )
 
@@ -53,14 +54,15 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 		Ik := make([]float64, K-k)
 
 		if k == 0 {
-			s := NewSem(K)
+			wg := new(sync.WaitGroup)
+			wg.Add(K)
 			for j := range Ik {
 				go func(i int) {
 					Ik[i] = trap(f, a, b, int(math.Pow(2, float64(i))))
-					s.Signal()
+					wg.Done()
 				}(j)
 			}
-			s.Wait(K)
+			wg.Wait()
 		} else {
 			for i := range Ik {
 				j := i + 1

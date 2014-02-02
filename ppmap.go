@@ -1,7 +1,9 @@
 package vec
 
-import "runtime"
-
+import (
+	"runtime"
+	"sync"
+)
 /* Iterative Function->Slice Mapping
 Maps a fuction onto an array on the values from
 'start' to 'end' (typically '0' to 'len(arr)')
@@ -33,7 +35,8 @@ func PPmap(fm Mathop, arr []float64) {
 		Smap(fm, arr, 0, len(arr))
 		return
 	} else {
-		sem := NewSem(NTHREADS)
+		wg := new(sync.WaitGroup)
+		wg.Add(NTHREADS)
 		start := 0
 		end := batch_size
 
@@ -41,7 +44,7 @@ func PPmap(fm Mathop, arr []float64) {
 		for i := 0; i < NTHREADS-1; i++ {
 			go func(s int, e int) {
 				Smap(fm, arr, s, e)
-				sem.Signal()
+				wg.Done()
 			}(start, end)
 			start += batch_size
 			end += batch_size
@@ -50,10 +53,10 @@ func PPmap(fm Mathop, arr []float64) {
 		//Spawn last goroutine with array of length 'batch_size + rem'
 		go func(s int, e int) {
 			Smap(fm, arr, s, e)
-			sem.Signal()
+			wg.Done()
 		}(start, end+rem)
 
-		sem.Wait(NTHREADS)
+		wg.Wait()
 		return
 	}
 }
