@@ -113,7 +113,7 @@ type Poisson struct {
 
 //Stirling -  De Moivre Series - accurate to O(n^-7)
 func delta(n float64) float64 {
-	return (1.0/(12.0*n)) - (1.0/(360.0*n*n*n)) + (1.0/(1260.0*n*n*n*n*n))
+	return (1.0/(12.0*n)) - (1.0/(360.0*n*n*n)) + (1.0/(1260.0*n*n*n*n*n)) - (1.0/(1680.0*math.Pow(n, 7)))
 }
 
 func D0(x float64) float64 {
@@ -177,4 +177,41 @@ func ChiSquaredDist(v int) *Gamma {
 	alpha := float64(v)/2.0
 	beta := 0.5
 	return &Gamma{alpha, beta}
+}
+
+//Student-T distribution
+type StudentT struct {
+	nu float64
+}
+
+func (s *StudentT) PDF(x float64) float64 {
+	return 1.0/(math.Sqrt(s.nu) * Beta(0.5, s.nu/2.0)) * math.Pow(1.0 + (x*x)/s.nu, 2.0)
+}
+
+func (s *StudentT) CDF(t float64) float64 {
+	x := s.nu/(t*t + s.nu)
+	return 1.0 - 0.5*IncBeta(x, s.nu/2.0, 0.5)
+}
+
+func StudentTDist(nu float64) *StudentT {
+	if nu < 0 {
+		return nil
+	}
+	return &StudentT{nu}
+}
+
+//CDF of KS-distribution
+func PKS(z float64) float64 {
+	out := math.Sqrt(2.0*math.Pi)/z
+	sum := 0.0
+	for j:=1; j<15; j++ {
+		j := float64(j)
+		sum += math.Exp(-1.0*(2*j-1.0)*(2*j-1.0)*math.Pi*math.Pi / (8.0*z*z))
+	}
+	return out*sum
+}
+
+//1-CDF of KS-distribution 
+func QKS(z float64) float64 {
+	return 1.0-PKS(z)
 }

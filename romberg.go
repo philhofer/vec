@@ -55,7 +55,7 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 
 		if k == 0 {
 			wg := new(sync.WaitGroup)
-			wg.Add(K)
+			wg.Add(len(Ik))
 			for j := range Ik {
 				go func(i int) {
 					Ik[i] = trap(f, a, b, int(math.Pow(2, float64(i))))
@@ -71,7 +71,7 @@ func Integral(f Mathop, a float64, b float64) (out float64, conv bool) {
 			}
 		}
 
-		out := Ik[K-k-1]
+		out = Ik[K-k-1]
 		if k > 0 {
 			err := math.Abs(Ik[K-k-1] - Ip[K-k])
 			if err <= 1E-16 {
