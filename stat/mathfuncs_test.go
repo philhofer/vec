@@ -1,6 +1,0 @@
-package stat
-
-import (
-	"testing"
-)
-
