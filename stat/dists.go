@@ -222,6 +222,10 @@ func (s *StudentT) CDF(t float64) float64 {
 		return 0.0
 	}
 
+	if t < 0 {
+		return 1.0 - s.CDF(-t)
+	}
+
 	x := s.nu/(t*t + s.nu)
 	return 1.0 - 0.5*IncBeta(x, s.nu/2.0, 0.5)
 }

@@ -35,8 +35,8 @@ func IncBeta(z float64, a float64, b float64) float64 {
 			return -1.0*((a+kf)*(a+b+kf)*z)/((a+2.0*kf)*(a+2.0*kf+1.0))
 		}
 	}
-	mult := r(15)
-	for k:=14; k>0; k-- {
+	mult := r(20)
+	for k:=19; k>0; k-- {
 		mult = 1.0 + r(k)/(mult)
 
 	}

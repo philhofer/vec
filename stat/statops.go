@@ -18,11 +18,22 @@ func WelchTtest(A []float64, B []float64) (p float64, t float64) {
 	sA := Variance(A)/float64(len(A))
 	sB := Variance(B)/float64(len(B))
 	s := math.Sqrt(sA + sB)
-	t = (xbarA - xbarB)/s
+	t = math.Abs(xbarA - xbarB)/s
 	df := math.Pow(sA + sB, 2)/((sA*sA)/float64(len(A)-1) + (sB*sB)/float64(len(B)-1))
 	Dist := StudentTDist(df)
 	if Dist == nil {
 		panic("Problem in Welch's t-test...")
+	}
+	p = (1.0 - Dist.CDF(t))*2.0
+	return
+}
+
+func Ttest(mean float64, A []float64) (p float64, t float64) {
+	t = math.Abs(Mean(A) - mean)/(StDev(A)/math.Sqrt(float64(len(A))))
+	df := len(A) - 1
+	Dist := StudentTDist(float64(df))
+	if Dist == nil {
+		panic("Problem in Ttest...")
 	}
 	p = (1.0 - Dist.CDF(t))*2.0
 	return
