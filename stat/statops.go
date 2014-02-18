@@ -8,6 +8,11 @@ import (
 //Welch's t-test
 //Unequal sample size, unequal variance, 2-tailed
 func WelchTtest(A []float64, B []float64) (p float64, t float64) {
+	//test for proper initial conditions
+	if len(A) <= 1 || len(B) <= 1 {
+		return 1.0, 0.0
+	}
+
 	xbarA := Mean(A)
 	xbarB := Mean(B)
 	sA := Variance(A)/float64(len(A))
@@ -25,6 +30,11 @@ func WelchTtest(A []float64, B []float64) (p float64, t float64) {
 
 //2-sample Kolmogorov-Smirnov test
 func KSTest2(A []float64, B []float64) (p float64, D float64) {
+	//test for proper initial conditions
+	if len(A) <= 1 || len(B) <= 1 {
+		return 1.0, 0.0
+	}
+
 	Ne := (len(A)*len(B))/(len(A) + len(B))
 	EA := ECDF(A)
 	EB := ECDF(B)

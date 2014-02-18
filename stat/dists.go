@@ -48,7 +48,7 @@ func (u *UnitNormal) CDF(x float64) float64 {
 }
 
 //To create a UnitNormal struct
-func UnitNormalDist() *UnitNormal {
+func UnitNormalDist() UnivariateDistribution {
 	return &UnitNormal{}
 }
 
@@ -68,8 +68,8 @@ func (n *Normal) CDF(x float64) float64 {
 	return 0.5*(1.0 + math.Erf((x - n.mean)/(math.Sqrt2*n.sigma)))
 }
 
-//To create a Normal struct
-func NormalDist(mean float64, sigma float64) *Normal {
+//To create a Normal object
+func NormalDist(mean float64, sigma float64) UnivariateDistribution {
 	if sigma <= 0 {
 		return nil
 	}
@@ -83,22 +83,25 @@ type Exponential struct {
 
 //Exponential PDF
 func (e *Exponential) PDF(x float64) float64 {
-	if x < 0 {
-		return 0
-	}
+	if math.IsInf(x, 1) {
+		return 1.0
+        }
+
+	if x <= 0 {return 0}
 	return e.lambda*math.Exp(-e.lambda*x)
 }
 
 //Exponential CDF
 func (e *Exponential) CDF(x float64) float64 {
-	if x < 0 {
-		return 0
-	}
+	if x <= 0 { return 0 }
+	if math.IsInf(x, 1) {
+		return 1.0
+        }
 	return 1.0 - math.Exp(-e.lambda*x)
 }
 
 //To create an Exponential struct
-func ExponentialDist(lambda float64) *Exponential {
+func ExponentialDist(lambda float64) UnivariateDistribution {
 	if lambda <= 0 {
 		return nil
 	}
@@ -116,25 +119,31 @@ func delta(n float64) float64 {
 	return (1.0/(12.0*n)) - (1.0/(360.0*n*n*n)) + (1.0/(1260.0*n*n*n*n*n)) - (1.0/(1680.0*math.Pow(n, 7)))
 }
 
-func D0(x float64) float64 {
+func d0(x float64) float64 {
 	return x*math.Log(x) + 1.0 - x
 }
 
 func (p *Poisson) PDF(k int) float64 {
 	//Use:
 	//http://projects.scipy.org/scipy/raw-attachment/ticket/620/loader2000Fast.pdf
-	
+
 	x := float64(k)
-	return (1.0/math.Sqrt(2.0*math.Pi*x))*math.Exp(-delta(x) - p.lambda*D0(x/p.lambda))
+	return (1.0/math.Sqrt(2.0*math.Pi*x))*math.Exp(-delta(x) - p.lambda*d0(x/p.lambda))
 }
 
 func (p *Poisson) CDF(x float64) float64 {
+	if math.IsInf(x, 1) {
+		return 1.0
+	} else if math.IsInf(x, -1) {
+		return 0.0
+	}
+
 	//Use regularized incomplete gamma function from specialfuncs
 	k := math.Floor(x)+1.0
 	return G(k, p.lambda)
 }
 
-func PoissonDist(lambda float64) *Poisson {
+func PoissonDist(lambda float64) DiscreetDistribution {
 	if lambda<=0 {
 		return nil
 	} 
@@ -149,6 +158,11 @@ type Gamma struct {
 //Gamma Distribution PDF
 func (g *Gamma) PDF(x float64) float64 {
 	if x <= 0 { return math.NaN() }
+	if math.IsInf(x, 1) {
+		return 1.0
+	} else if math.IsInf(x, -1) {
+		return 0.0
+	}
 	lga, _ := math.Lgamma(g.alpha)
 	logp := (g.alpha * math.Log(g.beta)) + ((g.alpha - 1.0) * math.Log(x)) - (x * g.beta) - lga
 	return math.Exp(logp)
@@ -157,11 +171,16 @@ func (g *Gamma) PDF(x float64) float64 {
 //Gamma Distribution CDF
 func (g *Gamma) CDF(x float64) float64 {
 	if x <= 0 { return math.NaN() }
+	if math.IsInf(x, 1) {
+		return 1.0
+	} else if math.IsInf(x, -1) {
+		return 0.0
+	}
 	return P(g.alpha, g.beta*x)
 }
 
 //Gamma Distribution Constructor - uses 'shape' and 'rate' parameters
-func GammaDist(alpha float64, beta float64) *Gamma {
+func GammaDist(alpha float64, beta float64) UnivariateDistribution {
 	if alpha < 0 || beta < 0 {
 		return nil
 	}
@@ -170,7 +189,7 @@ func GammaDist(alpha float64, beta float64) *Gamma {
 
 //Chi-squared Distribution Constructor
 //(Special case of Gamma Distribution Constructor)
-func ChiSquaredDist(v int) *Gamma {
+func ChiSquaredDist(v int) UnivariateDistribution {
 	if v <= 0 {
 		return nil
 	}
@@ -185,23 +204,47 @@ type StudentT struct {
 }
 
 func (s *StudentT) PDF(x float64) float64 {
+	if math.IsNaN(x) { return math.NaN() }
+	if math.IsInf(x, 1) {
+		return 1.0
+	} else if math.IsInf(x, -1) {
+		return 0.0
+	}
+
 	return 1.0/(math.Sqrt(s.nu) * Beta(0.5, s.nu/2.0)) * math.Pow(1.0 + (x*x)/s.nu, 2.0)
 }
 
 func (s *StudentT) CDF(t float64) float64 {
+	if math.IsNaN(t) { return math.NaN() }
+	if math.IsInf(t, 1) {
+		return 1.0
+	} else if math.IsInf(t, -1) {
+		return 0.0
+	}
+
 	x := s.nu/(t*t + s.nu)
 	return 1.0 - 0.5*IncBeta(x, s.nu/2.0, 0.5)
 }
 
-func StudentTDist(nu float64) *StudentT {
+func StudentTDist(nu float64) UnivariateDistribution {
 	if nu < 0 {
 		return nil
+	} else if math.IsInf(nu, 1) {
+		return &UnitNormal{}
 	}
 	return &StudentT{nu}
 }
 
 //CDF of KS-distribution
 func PKS(z float64) float64 {
+	if math.IsNaN(z) {
+		return math.NaN()
+	} else if math.IsInf(z, 1) {
+		return 1.0
+	} else if math.IsInf(z, -1) {
+		return 0.0
+	}
+
 	out := math.Sqrt(2.0*math.Pi)/z
 	sum := 0.0
 	for j:=1; j<15; j++ {
