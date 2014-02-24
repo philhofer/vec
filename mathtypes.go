@@ -80,3 +80,29 @@ func Fold(f BiMathop, vec []float64) float64 {
 		return val
 	}
 }
+
+type Array []float64
+
+func (a Array) Elements(indexes ...int) []float64 {
+	out := make([]float64, len(indexes))
+	for i, x := range indexes {
+		out[i] = a[x]
+	}
+	return out
+}
+
+func (a Array) Which(cond func(float64) bool) []float64 {
+	var out []float64
+	for _, x := range a {
+		if cond(x) { out = append(out, x) }
+	}
+	return out
+}
+
+func (a Array) WhichIndexes(cond func(float64) bool) []int {
+	var out []int
+	for i, x := range a{
+		if cond(x) { out = append(out, i) }
+	}
+	return out
+}

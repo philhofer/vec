@@ -154,6 +154,20 @@ func StDev(arr []float64) float64 {
 	return math.Sqrt(Variance(arr))
 }
 
+func Covariance(xs []float64, ys []float64) float64 {
+	if len(xs) != len(ys) {
+		return 0.0
+	} 
+	N := len(xs)
+	difs := make([]float64, N)
+	xbar := Mean(xs)
+	ybar := Mean(ys)
+	for i, x := range xs {
+		difs[i] = (x-xbar)*(ys[i]-ybar)
+	}
+	return Mean(difs)
+}
+
 func Skewness(arr []float64) float64 {
 	dnm := math.Pow(Variance(arr), 1.5)
 	sum := 0.0
