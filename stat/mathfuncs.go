@@ -168,6 +168,10 @@ func Covariance(xs []float64, ys []float64) float64 {
 	return Mean(difs)
 }
 
+func Correlation(xs []float64, ys []float64) float64 {
+	return Covariance(xs, ys)/(StDev(xs)*StDev(ys))
+}
+
 func Skewness(arr []float64) float64 {
 	dnm := math.Pow(Variance(arr), 1.5)
 	sum := 0.0

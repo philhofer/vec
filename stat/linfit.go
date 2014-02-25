@@ -26,19 +26,22 @@ func (lf *LinearFit) SumSquares(xs []float64, ys []float64) float64 {
 	return ss
 }
 
-//Perform a simple linear regression of the form y = a + b*x
-//'xs' and 'ys' must be of the same length; otherwise nil is returned
+/*Orthogonal Least-Squares Linear Fit
+Performs an orthogonal least-squares fit of a straight line
+through the data points 'xs' and 'ys.' Note that the 'ys' slice
+is treated as the dependent variable. Returns a pointer to a
+LinearFit struct.
+*/
 func LinFit(xs []float64, ys []float64) *LinearFit {
-	if len(xs) != len(ys) {
-		return nil
-	}
-
-	b := Covariance(xs, ys)/Variance(xs)
-	a := Mean(ys) - b*Mean(xs)
-	return &LinearFit{Slope: b, Intercept: a}
+	return DemingReg(xs, ys, 1.0)
 }
 
-//Performs a Deming regression when 'delta' is known
+/*Deming regression
+Performs a least-squares straight-line fit when the ratio of the
+variances of errors between 'x' and 'y' ('delta,' in this case) is known.
+Note that delta can be calculated, given error slices 'y_errors' and 'x_errors,' by
+Variance(y_errors)/Variance(x_errors)
+*/
 func DemingReg(xs []float64, ys []float64, delta float64) *LinearFit {
 	if len(xs) != len(ys) {
 		return nil
