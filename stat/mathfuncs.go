@@ -20,9 +20,13 @@ func Beta(z float64, w float64) float64 {
 	return math.Exp(a+b-c)
 }
 
+/*Incomplete Normalized Beta Function
+Undefined if:
+z, a, or b are < 0
+*/
 func IncBeta(z float64, a float64, b float64) float64 {
-	if z < 0 {
-		return 0.0
+	if z < 0 || a < 0 || b < 0 {
+		return math.NaN()
 	}
 	r := func(k int) float64 {
 		if k % 2 == 0 {
@@ -50,7 +54,10 @@ func IncBeta(z float64, a float64, b float64) float64 {
 Equal to Gamma(a, x)/Gamma(a)
 Evaluated by Legendre's continued fraction
 
-G E [0, 1)
+Special Cases:
+G(0, 0) = Infinity
+G(0, positive) = 1.0
+G(0, negative) = 1/(-a)
 */
 func G(a float64, x float64) float64 {
 	if x==0 {
@@ -103,7 +110,10 @@ func G(a float64, x float64) float64 {
 /*Incomplete Gamma Function P(a, x)
 Complement of G(a, x)
 
-P(a, x) E [1, 0)
+Special Cases:
+P(a, negative) = NaN
+P(negative, x) = NaN
+P(a, 0) = 0
 */
 func P(a float64, x float64) float64 {
 	if x < 0.0 {
@@ -126,6 +136,9 @@ func CompGamma(a float64, x float64) float64 {
 	return math.Pow(x, -a)*(P(a, x))
 }
 
+/*Sample Mean
+
+*/
 func Mean(arr []float64) float64 {
 	sum := 0.0
 	if len(arr) == 1 {
@@ -137,6 +150,9 @@ func Mean(arr []float64) float64 {
 	return sum/float64(len(arr))
 }
 
+/*Sample Variance
+Returns an unbiased estimator of array variance
+*/
 func Variance(arr []float64) float64 {
 	xbar := Mean(arr)
 	if len(arr) <= 1 {
@@ -150,10 +166,17 @@ func Variance(arr []float64) float64 {
 	return s/float64(len(arr)-1)
 }
 
+/*Sample Standard Deviation
+Returns an unbiased estimator of standard deviation of the sample
+*/
 func StDev(arr []float64) float64 {
 	return math.Sqrt(Variance(arr))
 }
 
+/*Covariance
+Calculates the covariance of 'xs' and 'ys'
+Slices must have the same length; otherwise 0.0 is returned
+*/
 func Covariance(xs []float64, ys []float64) float64 {
 	if len(xs) != len(ys) {
 		return 0.0
@@ -168,6 +191,11 @@ func Covariance(xs []float64, ys []float64) float64 {
 	return Mean(difs)
 }
 
+/*Correlation
+Returns the linear correlation coefficient for 'xs' and 'ys'
+assuming that 'ys' are the dependent variable and 'xs' are the
+independent variable.
+*/
 func Correlation(xs []float64, ys []float64) float64 {
 	return Covariance(xs, ys)/(StDev(xs)*StDev(ys))
 }
@@ -192,6 +220,28 @@ func Kurtosis(arr []float64) float64 {
 		sum += (xdif*xdif*xdif*xdif)
 	}
 	return (sum/float64(len(arr)))/(sigsq*sigsq)
+}
+
+func Spearman(xs []float64, ys []float64) float64 {
+	if len(xs) != len(ys) {
+		return 0.0
+	}
+	meanrank := float64(len(xs))/2.0
+	sortedxs := xs
+	sortedys := ys
+	sort.Float64s(sortedxs)
+	sort.Float64s(sortedys)
+	var num, denomx, denomy float64
+	for i, x := range xs {
+		xrank := float64(sort.SearchFloat64s(sortedxs, x))
+		yrank := float64(sort.SearchFloat64s(sortedys, ys[i]))
+		sx := xrank-meanrank
+		sy := yrank-meanrank
+		num += sx*sy
+		denomx += sx*sx
+		denomy += sy*sy
+	}
+	return num/(math.Sqrt(denomx)*math.Sqrt(denomy))
 }
 
 type Condition func(float64) bool

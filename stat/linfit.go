@@ -28,9 +28,9 @@ func (lf *LinearFit) SumSquares(xs []float64, ys []float64) float64 {
 
 /*Orthogonal Least-Squares Linear Fit
 Performs an orthogonal least-squares fit of a straight line
-through the data points 'xs' and 'ys.' Note that the 'ys' slice
-is treated as the dependent variable. Returns a pointer to a
-LinearFit struct.
+through the data points 'xs' and 'ys.' The arrangement of 'xs'
+and 'ys' is irrelevant, as orthogonal least-squares fits are robust
+to inversion. (In other words, LinFit(xs, ys) is equivalent to Linfit(ys, xs)).
 */
 func LinFit(xs []float64, ys []float64) *LinearFit {
 	return DemingReg(xs, ys, 1.0)
