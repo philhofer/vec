@@ -55,8 +55,8 @@ Feeds values to getCubicSplinCoeffs() that are equivalent to
 the right-hand side of the matrix equation (18) referenced in:
 http://mathworld.wolfram.com/CubicSpline.html
 */
-func CubicSpline(d BiVariateData) CubicSplineInterpolation {
-	spline := CubicSplineInterpolation{data: &d}
+func CubicSpline(d *BiVariateData) CubicSplineInterpolation {
+	spline := CubicSplineInterpolation{data: d}
 	N := len(d.Ys)
 
 	//Edge case - len(Ys) is zero

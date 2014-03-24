@@ -58,9 +58,9 @@ EDGE CASES:
 another empty struct literal
 */
 func TestCubicSpline(t *testing.T) {
-	bvd := BiVariateData{}
+	bvd := &BiVariateData{}
 	spl := CubicSpline(bvd)
-	if !reflect.DeepEqual(spl, CubicSplineInterpolation{data: &bvd}) {
+	if !reflect.DeepEqual(spl, CubicSplineInterpolation{data: bvd}) {
 		t.Error("CubicSpline(BiVariateData{}) didn't return CubicSplineInterpolation{data: &bvd}")
 	}
 }
@@ -72,7 +72,7 @@ func TestXBounds(t *testing.T) {
 	PPmap(math.J1, ys)
 
 	bvd := MakeBiVariateData(xs, ys)
-	spl := CubicSpline(*bvd)
+	spl := CubicSpline(bvd)
 
 	zero, one := spl.data.findXBounds(-1.0)
 	if one != 1 || zero != 0 {
@@ -98,7 +98,7 @@ func TestSplineOuts(t *testing.T) {
 	PPmap(math.J1, ys)
 
 	bvd := MakeBiVariateData(xs, ys)
-	spl := CubicSpline(*bvd)
+	spl := CubicSpline(bvd)
 
 	for i, _ := range xs {
 		yi := ys[i]
@@ -128,7 +128,7 @@ func BenchmarkSpline(b *testing.B) {
 	b.ResetTimer()
 	bvd := MakeBiVariateData(xs, ys)
 	for i := 0; i < b.N; i++ {
-		spl := CubicSpline(*bvd)
+		spl := CubicSpline(bvd)
 		spl.F(5.46827)
 		spl.DF(5.2908)
 		spl.DDF(2.2908)
