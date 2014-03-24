@@ -3,6 +3,8 @@ package stat
 import "math"
 // 1-dimensional Gaussian Mixture Modelling
 
+var EMAcc float64 = 10E-8
+
 type Gaussian struct {
 	Mean float64
 	StDev float64
@@ -49,15 +51,7 @@ func UnivariateGMM(arr []float64, K int) ([]Gaussian, []float64) {
 	//iterate
 	niter := 0
 	nef := make([]float64, K)
-	res_vals := make([][]float64, N)
 	for niter < MAXITER {
-		//set up res's
-		for i:=0; i<N; i++ {
-			res_vals[i] = make([]float64, K)
-			for k:=0; k<K; k++ {
-				res_vals[i][k] = res(i, k)
-			}
-		}
 
 		oldmeans := make([]float64, K)
 		oldsigms := make([]float64, K)
@@ -65,13 +59,15 @@ func UnivariateGMM(arr []float64, K int) ([]Gaussian, []float64) {
 			oldmeans[k] = out[k].Mean
 			oldsigms[k] = out[k].StDev
 		}
+
 		//get (n | k) and new mean estimate
 		for k:=0; k<K; k++ {
 			nef[k] = 0.0
 			uk := 0.0
 			for i:=0;i<N;i++{
-				nef[k] += res_vals[i][k]
-				uk += res_vals[i][k]*arr[i]
+				rik := res(i, k)
+				nef[k] += rik
+				uk += rik*arr[i]
 			}
 			out[k].Mean = uk/nef[k]
 			ps[k] = nef[k]/float64(N)
@@ -80,19 +76,24 @@ func UnivariateGMM(arr []float64, K int) ([]Gaussian, []float64) {
 		//get new sigma estimates
 		for k:=0; k<K; k++ {
 			sk := 0.0
+			nef[k] = 0.0
 			for i:=0;i<N;i++ {
+				rik := res(i, k)
 				ndif := arr[i] - out[k].Mean
-				sk += res_vals[i][k]*ndif*ndif
+				sk += rik*ndif*ndif
+				nef[k] += rik
 			}
 			out[k].StDev = math.Sqrt(sk/nef[k])
+			ps[k] = nef[k]/float64(N)
 		}
+
 		niter++
 		//check for convergence
 		conv := 0
 		for k:=0; k<K; k++ {
 			deltaM := math.Abs(oldmeans[k] - out[k].Mean)
 			deltaS := math.Abs(oldsigms[k] - out[k].StDev)
-			if deltaM > 10E-8 || deltaS > 10E-8 {
+			if deltaM > EMAcc || deltaS > EMAcc {
 				conv++
 			}
 		}
