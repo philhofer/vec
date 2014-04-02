@@ -13,8 +13,12 @@ type Generator struct {
 	rgen *rand.Rand
 }
 
+func (g *Generator) Next() float64 {
+	return g.interp.F(g.rgen.Float64())
+}
+
 func (g *Generator) Gen(N int) []float64 {
-	if N < 0 {
+	if N <= 0 {
 		return []float64{}
 	}
 	out := make([]float64, N)
