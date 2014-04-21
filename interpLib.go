@@ -55,8 +55,8 @@ Feeds values to getCubicSplinCoeffs() that are equivalent to
 the right-hand side of the matrix equation (18) referenced in:
 http://mathworld.wolfram.com/CubicSpline.html
 */
-func CubicSpline(d *BiVariateData) CubicSplineInterpolation {
-	spline := CubicSplineInterpolation{data: d}
+func CubicSpline(d *BiVariateData) *CubicSplineInterpolation {
+	spline := &CubicSplineInterpolation{data: d}
 	N := len(d.Ys)
 
 	//Edge case - len(Ys) is zero
@@ -82,7 +82,7 @@ func CubicSpline(d *BiVariateData) CubicSplineInterpolation {
 Returns the interpolated value of 'x'
 on the data pointed to by 's'
 */
-func (s CubicSplineInterpolation) F(x float64) float64 {
+func (s *CubicSplineInterpolation) F(x float64) float64 {
 	//Edge case - x is not rational
 	if notRat(x) {
 		return math.NaN()
@@ -105,7 +105,7 @@ First derivative of interpolated data
 evaluated at 'x'
 
 */
-func (s CubicSplineInterpolation) DF(x float64) float64 {
+func (s *CubicSplineInterpolation) DF(x float64) float64 {
 	//Edge case - x is not rational
 	if notRat(x) {
 		return math.NaN()
@@ -127,7 +127,7 @@ func (s CubicSplineInterpolation) DF(x float64) float64 {
 /*
 Second derivative evaluated at 'x'
 */
-func (s CubicSplineInterpolation) DDF(x float64) float64 {
+func (s *CubicSplineInterpolation) DDF(x float64) float64 {
 
 	if notRat(x) {
 		return math.NaN()
@@ -152,7 +152,7 @@ evaluated from 'a' to 'b'
 *Note: 'a' and 'b' must be rational
 (can't be +/-Inf -- will return NaN)
 */
-func (s CubicSplineInterpolation) Integral(a float64, b float64) float64 {
+func (s *CubicSplineInterpolation) Integral(a float64, b float64) float64 {
 
 	//Does not support +/- Inf bounds
 	if notRat(a) || notRat(b) {

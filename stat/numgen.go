@@ -9,7 +9,7 @@ import (
 // pseudo-random number generation by CDF
 
 type Generator struct {
-	interp vec.CubicSplineInterpolation
+	interp *vec.CubicSplineInterpolation
 	rgen *rand.Rand
 }
 

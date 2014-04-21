@@ -60,7 +60,7 @@ another empty struct literal
 func TestCubicSpline(t *testing.T) {
 	bvd := &BiVariateData{}
 	spl := CubicSpline(bvd)
-	if !reflect.DeepEqual(spl, CubicSplineInterpolation{data: bvd}) {
+	if !reflect.DeepEqual(*spl, CubicSplineInterpolation{data: bvd}) {
 		t.Error("CubicSpline(BiVariateData{}) didn't return CubicSplineInterpolation{data: &bvd}")
 	}
 }

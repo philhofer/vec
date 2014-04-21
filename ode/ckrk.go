@@ -47,7 +47,7 @@ const (
 
 type ODEFunc func(xs []float64, t float64) (nxs []float64)
 
-func ckrkStep(df ODEFunc, x0 []float64, t float64, h float64) (nxs []float64, err float64) {
+func CKRKStep(df ODEFunc, x0 []float64, t float64, h float64) (nxs []float64, err float64) {
 	currX := make([]float64, len(x0))
 	k1 := df(x0, t)
 	for i,_ := range k1 {
@@ -79,27 +79,30 @@ func ckrkStep(df ODEFunc, x0 []float64, t float64, h float64) (nxs []float64, er
 		k6[i] *= h
 	}
 	est1 := make([]float64, len(currX))
-	est2 := make([]float64, len(currX))
+	nxs = make([]float64, len(currX))
+	err = 0.0
 	for i,_ := range est1 {
 		est1[i] = x0[i] + B11*k1[i] + B13*k3[i] + B14*k4[i] + B16*k6[i]
-		est2[i] = x0[i] + B21*k1[i] + B23*k3[i] + B24*k4[i] + B25*k5[i] + B26*k6[i]
+		nxs[i] = x0[i] + B21*k1[i] + B23*k3[i] + B24*k4[i] + B25*k5[i] + B26*k6[i]
+		err += math.Abs(est1[i] - nxs[i]) 
 	}
-	return est1, est1[0]-est2[0]
+	err = err/float64(len(currX))
+	return
 }
 
 func Solve(fn ODEFunc, x0 []float64, t0 float64, tfinal float64, globalerr float64) (out []float64, t float64) {
+	out = make([]float64, len(x0))
 	copy(x0, out)
 	if globalerr < 0.0 { panic("Error needs to be positive.") }
 	if tfinal < t0 { panic("tfinal must be less than t0.") }
 	t = t0
-	localerr := globalerr/(tfinal-t0)
-	h := 10E-4
+	h := 0.01
 
 	//main loop - go until t>t0
 	for t < tfinal {
-		thisf, thiserr := ckrkStep(fn, out, t, h)
-		h = 0.9*h*(localerr/math.Abs(thiserr))
-		if math.Abs(thiserr) < localerr {
+		thisf, thiserr := CKRKStep(fn, out, t, h)
+		h = 0.99*h*math.Pow(math.Abs(globalerr/thiserr), 0.2)
+		if math.Abs(thiserr) < globalerr {
 			t += h
 			out = thisf
 		}
